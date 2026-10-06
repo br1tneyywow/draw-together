@@ -1068,7 +1068,7 @@
 
             if (Math.abs(startR - fillR) < 8 && Math.abs(startG - fillG) < 8 && Math.abs(startB - fillB) < 8) return null;
 
-            const tolerance = 45;
+            const tolerance = 100;
             const visited = new Uint8Array(w * h);
             const filledList = [];
 
