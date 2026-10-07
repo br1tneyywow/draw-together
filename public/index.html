@@ -3,239 +3,340 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>🎨 Рисуем вместе</title>
+<title>💕 Рисуем вместе</title>
 <style>
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    body {
-        font-family: 'Segoe UI', sans-serif;
-        margin: 0; padding: 10px;
+    html, body {
+        margin: 0; padding: 0;
         min-height: 100vh;
-        background:
-            radial-gradient(circle at 15% 15%, rgba(255, 107, 157, 0.15) 0%, transparent 45%),
-            radial-gradient(circle at 85% 85%, rgba(107, 157, 255, 0.15) 0%, transparent 45%),
-            linear-gradient(135deg, #131324 0%, #1a1a35 50%, #0f1c3f 100%);
-        color: #eee;
-        display: flex; align-items: center; justify-content: center;
+        font-family: 'Segoe UI', sans-serif;
+        background: #1a0a1e;
+        color: #fff5f8;
         overflow-x: hidden;
+        position: relative;
+    }
+    body::before, body::after {
+        content: '';
+        position: fixed;
+        border-radius: 50%;
+        filter: blur(120px);
+        pointer-events: none;
+        z-index: 0;
+    }
+    body::before {
+        width: 60vw; height: 60vw;
+        background: radial-gradient(circle, rgba(255,20,147,0.55), transparent 70%);
+        top: -20vw; left: -15vw;
+        animation: floatGlow 20s ease-in-out infinite;
+    }
+    body::after {
+        width: 70vw; height: 70vw;
+        background: radial-gradient(circle, rgba(255,107,157,0.45), transparent 70%);
+        bottom: -25vw; right: -20vw;
+        animation: floatGlow 26s ease-in-out infinite reverse;
+    }
+    @keyframes floatGlow {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        33% { transform: translate(8vw, -5vw) scale(1.12); }
+        66% { transform: translate(-6vw, 6vw) scale(0.94); }
+    }
+
+    .page-wrap {
+        position: relative;
+        z-index: 1;
+        min-height: 100vh;
+        display: flex; align-items: center; justify-content: center;
+        padding: 10px;
     }
     .container {
-        background: linear-gradient(145deg, rgba(35, 35, 56, 0.95) 0%, rgba(42, 42, 68, 0.95) 100%);
-        padding: 20px;
-        border-radius: 25px;
-        box-shadow: 0 10px 60px rgba(198, 107, 255, 0.25), 0 0 0 1px rgba(255, 182, 193, 0.15);
+        background: linear-gradient(145deg, rgba(60,32,55,0.85), rgba(70,38,62,0.85));
+        backdrop-filter: blur(16px);
+        padding: 22px; border-radius: 28px;
+        box-shadow: 0 10px 70px rgba(255,20,147,0.35), 0 0 0 1px rgba(255,182,193,0.25);
         max-width: 1000px; width: 100%;
         text-align: center;
-        color: #eee;
+        position: relative;
     }
     h1 {
-        background: linear-gradient(135deg, #FFB6C1, #C66BFF, #9DCFFF);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        background: linear-gradient(135deg, #FFB6C1, #FF69B4, #FFD700);
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         background-clip: text;
-        margin: 5px 0 20px; font-size: 30px;
+        margin: 5px 0 20px; font-size: 32px;
+        filter: drop-shadow(0 2px 14px rgba(255,20,147,0.6));
     }
-    h2 { color: #E5B8FF; margin: 5px 0; font-size: 22px; }
+    h2 { color: #FFB6C1; margin: 5px 0; font-size: 22px; }
     .hidden { display: none !important; }
 
     .btn {
-        padding: 12px 24px; margin: 4px;
-        cursor: pointer;
-        background: linear-gradient(135deg, #FF6B9D 0%, #C66BFF 100%);
-        color: white; border: none;
-        border-radius: 14px;
+        padding: 12px 24px; margin: 4px; cursor: pointer;
+        background: linear-gradient(135deg, #FF6B9D 0%, #FF1493 100%);
+        color: white; border: none; border-radius: 16px;
         font-size: 15px; font-weight: bold;
-        box-shadow: 0 4px 20px rgba(198, 107, 255, 0.4);
+        box-shadow: 0 4px 20px rgba(255,107,157,0.5);
         transition: all 0.2s;
     }
     .btn:hover { transform: translateY(-3px); }
     .btn:active { transform: translateY(-1px) scale(0.98); }
-    .btn-secondary { background: linear-gradient(135deg, #6BCFFF 0%, #6B9DFF 100%); }
-    .btn-warn { background: linear-gradient(135deg, #FFB74D 0%, #FF7043 100%); }
-    .btn-danger { background: linear-gradient(135deg, #FF6B6B 0%, #E53935 100%); }
-    .btn-success { background: linear-gradient(135deg, #66BB6A 0%, #43A047 100%); }
+    .btn-secondary { background: linear-gradient(135deg, #FF8FAB, #FF69B4); }
+    .btn-warn { background: linear-gradient(135deg, #FFB74D, #FF7043); }
+    .btn-danger { background: linear-gradient(135deg, #FF6B6B, #E53935); }
+    .btn-success { background: linear-gradient(135deg, #66BB6A, #43A047); }
     .btn.small { padding: 8px 14px; font-size: 13px; }
 
     input[type="text"] {
         padding: 12px 16px; font-size: 16px;
-        border: 2px solid #4a4a6e; border-radius: 15px;
-        background: rgba(26, 26, 46, 0.8);
-        color: #eee;
-        text-align: center; font-weight: bold;
-        outline: none;
+        border: 2px solid #8a4a72; border-radius: 15px;
+        background: rgba(50,26,48,0.8); color: #fff5f8;
+        text-align: center; font-weight: bold; outline: none;
         font-family: inherit;
     }
     input.code-input { text-transform: uppercase; letter-spacing: 4px; width: 150px; }
     input:focus { border-color: #FF69B4; }
 
     .code-row {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        margin: 15px auto;
-        padding: 8px 12px;
-        background: rgba(255, 182, 193, 0.06);
-        border-radius: 20px;
-        border: 1px solid rgba(255, 182, 193, 0.15);
+        display: inline-flex; align-items: center; gap: 10px;
+        margin: 15px auto; padding: 8px 12px;
+        background: rgba(255,182,193,0.12); border-radius: 20px;
+        border: 1px solid rgba(255,182,193,0.3);
     }
     .code-box {
         font-size: 28px; font-weight: bold;
-        background: linear-gradient(135deg, #FFB6C1, #C66BFF);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        background: linear-gradient(135deg, #FFB6C1, #FFD700);
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         background-clip: text;
         letter-spacing: 3px;
     }
     .copy-btn {
-        padding: 8px 14px;
-        border-radius: 12px;
-        border: none;
-        cursor: pointer;
-        background: linear-gradient(135deg, #FF6B9D, #C66BFF);
-        color: white;
-        font-weight: bold;
-        font-size: 13px;
-        box-shadow: 0 3px 15px rgba(198, 107, 255, 0.4);
+        padding: 8px 14px; border-radius: 12px; border: none; cursor: pointer;
+        background: linear-gradient(135deg, #FF6B9D, #FF1493);
+        color: white; font-weight: bold; font-size: 13px;
+        box-shadow: 0 3px 15px rgba(255,107,157,0.5);
         transition: all 0.2s;
-        display: flex;
-        align-items: center;
-        gap: 5px;
+        display: flex; align-items: center; gap: 5px;
     }
     .copy-btn:hover { transform: scale(1.05); }
     .copy-btn.copied { background: linear-gradient(135deg, #66BB6A, #43A047); }
 
     .role-badge {
         display: inline-block; padding: 6px 18px;
-        background: linear-gradient(135deg, #FF6B9D, #C66BFF);
+        background: linear-gradient(135deg, #FF6B9D, #FF1493);
         color: white; border-radius: 20px;
         font-size: 14px; font-weight: bold; margin: 8px 0;
     }
     .role-badge.guest { background: linear-gradient(135deg, #FFB74D, #FF7043); }
 
-    .image-select { display: flex; justify-content: center; gap: 12px; margin: 15px 0; flex-wrap: wrap; }
-    .image-select img {
-        width: 160px; height: 160px;
-        object-fit: cover;
-        border: 4px solid transparent;
-        cursor: pointer; border-radius: 15px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-        transition: all 0.25s;
-        opacity: 0.85;
-        background: white;
+    .image-select {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 16px;
+        margin: 20px auto;
+        padding: 10px;
+        max-width: 900px;
     }
-    .image-select img:hover { transform: scale(1.06) translateY(-4px); opacity: 1; }
-    .image-select img.proposed {
+    .image-select .img-wrap {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        border-radius: 18px;
+        overflow: hidden;
+        cursor: pointer;
+        border: 4px solid rgba(255,182,193,0.25);
+        box-shadow: 0 6px 25px rgba(0,0,0,0.5);
+        transition: transform 0.4s cubic-bezier(0.34,1.4,0.64,1),
+                    box-shadow 0.4s, border-color 0.4s;
+        opacity: 0.95;
+        background: white;
+        position: relative;
+    }
+    .image-select .img-wrap img {
+        width: 100%; height: 100%; object-fit: cover; display: block;
+    }
+    .image-select .img-wrap:hover {
+        transform: scale(1.12) translateY(-6px);
+        box-shadow: 0 15px 55px rgba(255,107,157,0.75);
+        border-color: rgba(255,182,193,0.65);
+        opacity: 1;
+        z-index: 5;
+    }
+    .image-select .img-wrap.touch-zoom {
+        transform: scale(1.25) translateY(-8px);
+        box-shadow: 0 20px 60px rgba(255,215,0,0.9);
         border-color: #FFD700;
-        box-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+        opacity: 1;
+        z-index: 5;
+    }
+    .image-select .img-wrap.proposed {
+        border-color: #FFD700;
+        box-shadow: 0 0 40px rgba(255,215,0,0.95);
         opacity: 1;
         animation: pulse 1.2s infinite;
     }
-    @keyframes pulse {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.05); }
-    }
+    @keyframes pulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.06);} }
 
     .palette {
         display: grid;
         grid-template-columns: repeat(10, 1fr);
-        gap: 6px;
-        margin: 10px auto;
-        padding: 12px;
-        background: rgba(255, 182, 193, 0.06);
-        border-radius: 15px;
-        max-width: 500px;
-        border: 1px solid rgba(255, 182, 193, 0.12);
+        gap: 6px; margin: 10px auto; padding: 12px;
+        background: rgba(255,182,193,0.1); border-radius: 15px;
+        max-width: 520px;
+        border: 1px solid rgba(255,182,193,0.25);
     }
     .color-swatch {
-        width: 100%; aspect-ratio: 1;
-        border-radius: 50%;
-        cursor: pointer;
-        border: 3px solid rgba(255,255,255,0.15);
+        width: 100%; aspect-ratio: 1; border-radius: 50%; cursor: pointer;
+        border: 3px solid rgba(255,255,255,0.2);
         transition: all 0.15s;
     }
     .color-swatch:hover { transform: scale(1.15); }
     .color-swatch.active {
-        border-color: #FFD700;
-        transform: scale(1.2);
-        box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.4);
+        border-color: #FFD700; transform: scale(1.2);
+        box-shadow: 0 0 0 3px rgba(255,215,0,0.5);
     }
 
-    .custom-color-wrap {
-        display: flex; justify-content: center;
-        align-items: center; gap: 10px;
-        margin: 12px auto;
-        color: #E5B8FF;
-        font-size: 14px;
+    .color-picker-inline {
+        max-width: 520px;
+        margin: 14px auto;
+        padding: 16px 18px;
+        background: rgba(255,182,193,0.08);
+        border-radius: 18px;
+        border: 1px solid rgba(255,182,193,0.25);
+        text-align: left;
+    }
+    .color-picker-inline .row {
+        display: flex; align-items: center; gap: 12px;
+        margin: 10px 0;
+        color: #FFB6C1;
         font-weight: bold;
-        flex-wrap: wrap;
+        font-size: 13px;
     }
-    input[type="color"] {
-        width: 55px; height: 42px;
-        border: 3px solid #FFB6C1;
-        border-radius: 12px;
-        background: transparent;
-        cursor: pointer;
-        padding: 2px;
+    .color-picker-inline .row label {
+        min-width: 22px;
+        text-align: center;
+        font-size: 14px;
     }
-    input[type="range"] {
-        width: 160px;
-        accent-color: #C66BFF;
+    .color-picker-inline input[type=range] {
+        flex: 1;
+        height: 8px;
+        border-radius: 6px;
+        appearance: none;
+        outline: none;
+    }
+    .color-picker-inline input[type=range]::-webkit-slider-thumb {
+        appearance: none;
+        width: 22px; height: 22px;
+        border-radius: 50%;
+        background: white;
+        border: 3px solid #FF69B4;
         cursor: pointer;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    }
+    .color-picker-inline input[type=range]::-moz-range-thumb {
+        width: 22px; height: 22px;
+        border-radius: 50%;
+        background: white;
+        border: 3px solid #FF69B4;
+        cursor: pointer;
+    }
+    .color-preview-row {
+        display: flex; align-items: center; gap: 12px;
+        margin-top: 10px;
+    }
+    .color-preview-row .preview {
+        width: 44px; height: 44px;
+        border-radius: 50%;
+        border: 3px solid rgba(255,255,255,0.4);
+        box-shadow: 0 0 20px rgba(255,107,157,0.7);
+        flex-shrink: 0;
+    }
+    .color-preview-row .hex {
+        color: #FFD700;
+        font-weight: bold;
+        font-family: monospace;
+        font-size: 14px;
+    }
+    #hueSlider { background: linear-gradient(to right, #f00 0%, #ff0 17%, #0f0 33%, #0ff 50%, #00f 67%, #f0f 83%, #f00 100%); }
+
+    .brush-wrap {
+        display: flex; justify-content: center; align-items: center;
+        gap: 12px; margin: 10px auto; max-width: 500px;
+        color: #FFB6C1; font-weight: bold; font-size: 14px;
+    }
+    .brush-wrap input[type=range] {
+        flex: 1; accent-color: #FF69B4; height: 6px;
+    }
+    .brush-size-label {
+        min-width: 46px; text-align: right;
     }
 
     .tools {
         display: flex; justify-content: center;
-        gap: 6px; flex-wrap: wrap;
-        margin: 10px 0;
+        gap: 6px; flex-wrap: wrap; margin: 10px 0;
     }
 
     .players-bar {
-        display: flex; justify-content: space-between;
+        display: flex; justify-content: center;
         align-items: center; gap: 10px;
         max-width: 820px; margin: 10px auto;
+        flex-wrap: wrap;
     }
     .player-tag {
         display: flex; align-items: center; gap: 8px;
         padding: 8px 16px;
-        background: linear-gradient(135deg, rgba(255, 107, 157, 0.15), rgba(198, 107, 255, 0.15));
-        border-radius: 20px;
-        font-weight: bold;
+        background: linear-gradient(135deg, rgba(255,107,157,0.2), rgba(255,20,147,0.2));
+        border-radius: 20px; font-weight: bold;
         color: #FFB6C1;
-        border: 2px solid rgba(255, 182, 193, 0.25);
-        font-size: 14px;
-        min-width: 120px;
+        border: 2px solid rgba(255,182,193,0.35);
+        font-size: 14px; min-width: 120px;
+        transition: all 0.4s;
     }
     .player-tag.right {
-        background: linear-gradient(135deg, rgba(107, 207, 255, 0.15), rgba(107, 157, 255, 0.15));
-        border-color: rgba(107, 207, 255, 0.25);
-        color: #9DCFFF;
+        background: linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,183,77,0.2));
+        border-color: rgba(255,215,0,0.35);
+        color: #FFD700;
     }
     .player-tag .avatar { font-size: 22px; }
     .player-tag.me { box-shadow: 0 0 0 3px #FFD700; }
 
-    .canvas-stage {
-        display: flex;
-        justify-content: center;
-        align-items: flex-start;
-        gap: 10px;
-        max-width: 100%;
-        margin: 0 auto;
+    .player-tag.ready-self {
+        background: linear-gradient(135deg, rgba(102,187,106,0.55), rgba(67,160,71,0.55));
+        border-color: #66BB6A;
+        color: #e8ffe8;
+        box-shadow: 0 0 25px rgba(102,187,106,0.8);
+    }
+    .player-tag.ready-partner {
+        background: linear-gradient(135deg, rgba(102,187,106,0.3), rgba(67,160,71,0.3));
+        border-color: rgba(102,187,106,0.7);
+        color: #d8ffd8;
+        box-shadow: 0 0 20px rgba(102,187,106,0.55);
+        animation: softGlow 2s ease-in-out infinite;
+    }
+    @keyframes softGlow {
+        0%,100% { box-shadow: 0 0 18px rgba(102,187,106,0.5); }
+        50% { box-shadow: 0 0 32px rgba(102,187,106,0.95); }
     }
 
+    .canvas-stage {
+        display: flex; justify-content: center; align-items: center;
+        gap: 10px; max-width: 100%; margin: 0 auto;
+    }
     .canvas-viewport {
         position: relative;
         width: 800px;
-        height: 800px;
+        aspect-ratio: 1 / 1;
         max-width: 100%;
+        max-height: 80vh;
         overflow: hidden;
         border-radius: 22px;
-        background: linear-gradient(135deg, rgba(255, 107, 157, 0.12), rgba(107, 157, 255, 0.12));
-        padding: 10px;
-        box-shadow: 0 0 40px rgba(198, 107, 255, 0.15);
+        background: linear-gradient(135deg, rgba(255,182,193,0.15), rgba(255,215,0,0.1));
+        box-shadow: 0 0 50px rgba(255,20,147,0.4);
         touch-action: none;
-        -webkit-user-select: none;
         user-select: none;
+        margin: 0 auto;
     }
-
+    .zoom-wrap {
+        position: absolute;
+        top: 0; left: 0;
+        transform-origin: 0 0;
+        will-change: transform;
+    }
     canvas {
         display: block;
         cursor: crosshair;
@@ -248,139 +349,73 @@
     canvas.panning { cursor: grabbing; }
 
     .zoom-panel {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        display: flex;
-        gap: 6px;
-        background: rgba(26, 26, 46, 0.95);
+        position: fixed; bottom: 20px; right: 20px;
+        display: flex; gap: 6px;
+        background: rgba(60,32,55,0.95);
         backdrop-filter: blur(8px);
-        padding: 6px;
-        border-radius: 15px;
-        border: 1px solid rgba(198, 107, 255, 0.3);
+        padding: 6px; border-radius: 15px;
+        border: 1px solid rgba(255,182,193,0.4);
         z-index: 100;
     }
     .zoom-btn {
-        width: 38px; height: 38px;
-        border-radius: 10px;
-        border: none;
-        cursor: pointer;
-        background: linear-gradient(135deg, #FF6B9D, #C66BFF);
-        color: white;
-        font-size: 18px;
-        font-weight: bold;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        width: 38px; height: 38px; border-radius: 10px; border: none; cursor: pointer;
+        background: linear-gradient(135deg, #FF6B9D, #FF1493);
+        color: white; font-size: 18px; font-weight: bold;
+        display: flex; align-items: center; justify-content: center;
         transition: all 0.2s;
     }
     .zoom-btn:hover { transform: scale(1.1); }
     .zoom-info {
-        color: #E5B8FF;
-        font-size: 13px;
-        font-weight: bold;
-        padding: 0 8px;
-        display: flex;
-        align-items: center;
-        min-width: 50px;
-        justify-content: center;
+        color: #FFB6C1; font-size: 13px; font-weight: bold;
+        padding: 0 8px; display: flex; align-items: center;
+        min-width: 50px; justify-content: center;
     }
 
-    .waiting-side {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        padding: 20px 25px;
-        min-width: 180px;
-        max-width: 240px;
-        border-radius: 22px;
-        background: linear-gradient(145deg, rgba(42, 42, 68, 0.85), rgba(30, 30, 50, 0.85));
-        border: 2px dashed rgba(198, 107, 255, 0.4);
-        color: #E5B8FF;
-        text-align: center;
-        gap: 14px;
-        flex-shrink: 0;
-        align-self: stretch;
-    }
-    .waiting-side .ws-avatar {
-        font-size: 60px;
-        animation: floaty 3s ease-in-out infinite;
-        filter: drop-shadow(0 0 15px rgba(255, 107, 157, 0.5));
-    }
-    @keyframes floaty {
-        0%, 100% { transform: translateY(0) rotate(-5deg); }
-        50% { transform: translateY(-10px) rotate(5deg); }
-    }
-    .waiting-side .ws-text {
-        font-size: 14px;
-        line-height: 1.4;
-        font-weight: bold;
-        color: #B8B8D1;
-    }
-    .waiting-side .ws-text b { color: #E5B8FF; display: block; margin-bottom: 4px; font-size: 15px; }
-    .waiting-side .ws-dots { display: flex; gap: 6px; }
-    .waiting-side .ws-dot {
-        width: 10px; height: 10px;
+    .brush-cursor {
+        position: fixed;
+        pointer-events: none;
+        border: 2px solid rgba(0,0,0,0.9);
         border-radius: 50%;
-        background: #FF69B4;
-        animation: dotPulse 1.4s ease-in-out infinite;
-    }
-    .waiting-side .ws-dot:nth-child(2) { animation-delay: 0.2s; background: #C66BFF; }
-    .waiting-side .ws-dot:nth-child(3) { animation-delay: 0.4s; background: #9DCFFF; }
-    @keyframes dotPulse {
-        0%, 100% { transform: scale(0.6); opacity: 0.5; }
-        50% { transform: scale(1.3); opacity: 1; }
-    }
-
-    @media (max-width: 900px) {
-        .waiting-side { display: none; }
-        .canvas-viewport { width: 100%; height: auto; aspect-ratio: 1; }
+        transform: translate(-50%, -50%);
+        z-index: 9999;
+        display: none;
+        box-sizing: border-box;
     }
 
     #status { color: #FF8FAB; font-weight: bold; min-height: 20px; }
-    .tool-info { font-size: 14px; color: #B8B8D1; margin: 8px 0; }
+    .tool-info { font-size: 14px; color: #ffd0dd; margin: 8px 0; }
 
     .avatar-select {
-        display: flex; justify-content: center;
-        gap: 8px; flex-wrap: wrap;
+        display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;
         margin: 15px 0;
     }
     .avatar-item {
-        font-size: 30px;
-        width: 55px; height: 55px;
+        font-size: 30px; width: 55px; height: 55px;
         display: flex; align-items: center; justify-content: center;
-        border-radius: 50%;
-        cursor: pointer;
-        background: rgba(255, 182, 193, 0.06);
+        border-radius: 50%; cursor: pointer;
+        background: rgba(255,182,193,0.1);
         border: 3px solid transparent;
         transition: all 0.2s;
     }
     .avatar-item:hover { transform: scale(1.15); }
     .avatar-item.active {
-        border-color: #FF69B4;
-        background: rgba(255, 105, 180, 0.2);
-        box-shadow: 0 0 25px rgba(255, 105, 180, 0.7);
+        border-color: #FFD700;
+        background: rgba(255,105,180,0.3);
+        box-shadow: 0 0 25px rgba(255,105,180,0.8);
     }
 
     .reactions-panel {
-        display: flex; justify-content: center;
-        gap: 6px; flex-wrap: wrap;
-        margin: 10px auto;
-        padding: 10px;
-        background: rgba(255, 182, 193, 0.06);
-        border-radius: 15px;
-        max-width: 600px;
-        border: 1px solid rgba(255, 182, 193, 0.12);
+        display: flex; justify-content: center; gap: 6px; flex-wrap: wrap;
+        margin: 10px auto; padding: 10px;
+        background: rgba(255,182,193,0.1);
+        border-radius: 15px; max-width: 600px;
+        border: 1px solid rgba(255,182,193,0.25);
     }
     .reaction-btn {
-        font-size: 26px;
-        width: 44px; height: 44px;
+        font-size: 26px; width: 44px; height: 44px;
         display: flex; align-items: center; justify-content: center;
-        background: rgba(255,255,255,0.04);
-        border-radius: 50%;
-        cursor: pointer;
-        border: 2px solid rgba(255, 182, 193, 0.12);
+        background: rgba(255,255,255,0.05); border-radius: 50%;
+        cursor: pointer; border: 2px solid rgba(255,182,193,0.2);
         transition: all 0.15s;
     }
     .reaction-btn:hover {
@@ -388,80 +423,108 @@
         border-color: #FF69B4;
     }
 
-    .comment-bar {
-        display: flex; gap: 8px;
-        max-width: 500px; margin: 12px auto;
+    .phrase-bar {
+        display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;
+        max-width: 700px; margin: 12px auto;
     }
-    .comment-bar input {
-        flex: 1;
-        padding: 10px 14px;
-        border: 2px solid #4a4a6e;
+    .phrase-btn {
+        padding: 8px 16px;
         border-radius: 20px;
-        font-size: 14px;
-        background: rgba(26, 26, 46, 0.8);
-        color: #eee;
-        text-align: left;
-        font-weight: normal;
-        letter-spacing: normal;
-    }
-    .comment-bar button {
-        padding: 10px 18px;
-        border-radius: 20px;
-        background: linear-gradient(135deg, #FF6B9D, #C66BFF);
-        color: white; border: none;
+        border: 2px solid rgba(255,182,193,0.35);
+        background: linear-gradient(135deg, rgba(255,107,157,0.18), rgba(255,20,147,0.18));
+        color: #ffd0dd;
+        font-size: 13px;
         font-weight: bold;
         cursor: pointer;
+        transition: all 0.2s;
+    }
+    .phrase-btn:hover {
+        transform: translateY(-2px) scale(1.05);
+        background: linear-gradient(135deg, rgba(255,107,157,0.4), rgba(255,20,147,0.4));
+        border-color: #FFD700;
+        color: #fff;
     }
 
     #bubbles {
-        position: fixed;
-        top: 20px; right: 20px;
-        z-index: 9999;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        pointer-events: none;
-        max-width: 300px;
+        position: fixed; top: 20px; right: 20px;
+        z-index: 9999; display: flex; flex-direction: column;
+        gap: 10px; pointer-events: none; max-width: 300px;
     }
     .bubble {
-        background: linear-gradient(145deg, rgba(42, 42, 68, 0.95), rgba(35, 35, 56, 0.95));
-        border-radius: 20px;
-        padding: 10px 18px;
-        box-shadow: 0 4px 25px rgba(198, 107, 255, 0.4);
+        background: linear-gradient(145deg, rgba(70,38,62,0.95), rgba(60,32,55,0.95));
+        border-radius: 20px; padding: 10px 18px;
+        box-shadow: 0 4px 25px rgba(255,107,157,0.55);
         font-size: 16px;
         animation: bubbleIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-        border: 2px solid rgba(255, 182, 193, 0.3);
-        max-width: 280px;
-        word-wrap: break-word;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        color: #eee;
+        border: 2px solid rgba(255,182,193,0.5);
+        max-width: 280px; word-wrap: break-word;
+        display: flex; align-items: center; gap: 8px;
+        color: #fff5f8;
     }
     .bubble .bubble-avatar { font-size: 26px; }
     .bubble .bubble-emoji { font-size: 32px; }
     .bubble .bubble-text { font-size: 15px; }
-
     @keyframes bubbleIn {
-        0% { opacity: 0; transform: translateX(100px) scale(0.5); }
-        100% { opacity: 1; transform: translateX(0) scale(1); }
+        0%{opacity:0;transform:translateX(100px) scale(0.5);}
+        100%{opacity:1;transform:translateX(0) scale(1);}
     }
     @keyframes bubbleOut {
-        0% { opacity: 1; transform: translateX(0) scale(1); }
-        100% { opacity: 0; transform: translateX(100px) scale(0.5); }
+        0%{opacity:1;transform:translateX(0) scale(1);}
+        100%{opacity:0;transform:translateX(100px) scale(0.5);}
     }
     .bubble.out { animation: bubbleOut 0.4s ease forwards; }
 
     .turn-banner {
-        padding: 12px 20px;
-        margin: 12px auto;
-        max-width: 600px;
-        background: linear-gradient(135deg, rgba(255, 215, 0, 0.12), rgba(255, 105, 180, 0.12));
-        border: 2px solid rgba(255, 215, 0, 0.35);
-        border-radius: 15px;
-        font-weight: bold;
+        padding: 12px 20px; margin: 12px auto; max-width: 600px;
+        background: linear-gradient(135deg, rgba(255,215,0,0.18), rgba(255,105,180,0.18));
+        border: 2px solid rgba(255,215,0,0.5);
+        border-radius: 15px; font-weight: bold;
+        color: #FFD700; font-size: 15px;
+    }
+
+    .tutorial-overlay {
+        position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(20,8,20,0.85);
+        z-index: 99999;
+        display: flex; align-items: center; justify-content: center;
+        padding: 20px;
+        backdrop-filter: blur(6px);
+    }
+    .tutorial-card {
+        background: linear-gradient(145deg, rgba(70,38,62,0.98), rgba(60,32,55,0.98));
+        border-radius: 24px;
+        padding: 25px 30px;
+        max-width: 440px;
+        width: 100%;
+        border: 2px solid rgba(255,182,193,0.5);
+        box-shadow: 0 20px 60px rgba(255,107,157,0.5);
+        text-align: left;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+    .tutorial-card h3 {
+        margin: 0 0 15px;
         color: #FFD700;
-        font-size: 15px;
+        text-align: center;
+        font-size: 22px;
+    }
+    .tutorial-step {
+        display: flex; align-items: flex-start; gap: 12px;
+        margin: 14px 0;
+        color: #ffd0dd;
+        font-size: 14px;
+        line-height: 1.4;
+    }
+    .tutorial-step .icon {
+        font-size: 26px;
+        flex-shrink: 0;
+        width: 36px;
+        text-align: center;
+    }
+    .tutorial-step b { color: #FFB6C1; }
+    .tutorial-card .btn {
+        display: block; margin: 20px auto 0;
+        width: 100%;
     }
 
     @media (max-width: 700px) {
@@ -469,7 +532,10 @@
         h1 { font-size: 22px; }
         h2 { font-size: 18px; }
         .btn { padding: 10px 16px; font-size: 13px; }
-        .image-select img { width: 100px; height: 100px; }
+        .image-select {
+            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            gap: 10px;
+        }
         .code-box { font-size: 22px; }
         .copy-btn { padding: 6px 10px; font-size: 12px; }
         .palette { grid-template-columns: repeat(8, 1fr); }
@@ -478,32 +544,34 @@
         .zoom-panel { bottom: 10px; right: 10px; padding: 4px; }
         .zoom-btn { width: 32px; height: 32px; font-size: 15px; }
         .zoom-info { font-size: 11px; padding: 0 5px; min-width: 40px; }
+        .phrase-btn { padding: 6px 12px; font-size: 12px; }
     }
 </style>
 </head>
 <body>
+<div class="page-wrap">
 <div class="container">
-    <!-- Экран 1 -->
-    <div id="screen-login">
-        <h1>🎨 Рисуем вместе 🌙</h1>
-        <p class="tool-info">Выберите аватарку, напишите имя и играйте с другом!</p>
 
-        <p style="color:#E5B8FF; font-weight:bold; margin: 10px 0 5px;">👤 Ваша аватарка:</p>
+    <div id="screen-login">
+        <h1>💕 Рисуем вместе 💕</h1>
+        <p class="tool-info">Выбери аватарку, напиши имя и пригласи свою половинку!</p>
+
+        <p style="color:#FFB6C1; font-weight:bold; margin: 10px 0 5px;">👤 Твоя аватарка:</p>
         <div class="avatar-select" id="avatar-select"></div>
 
-        <p style="color:#E5B8FF; font-weight:bold; margin: 10px 0 5px;">✏️ Ваше имя:</p>
-        <input type="text" id="nameInput" placeholder="Как тебя зовут?" maxlength="15" style="width: 220px; letter-spacing: normal; text-transform: none;">
+        <p style="color:#FFB6C1; font-weight:bold; margin: 10px 0 5px;">✏️ Твоё имя:</p>
+        <input type="text" id="nameInput" placeholder="Как тебя зовут?" maxlength="15"
+               style="width: 220px; letter-spacing: normal; text-transform: none;">
 
         <br><br>
         <button class="btn" onclick="createRoom()">✨ Создать комнату</button>
         <br><br>
         <input type="text" id="roomInput" class="code-input" placeholder="КОД" maxlength="4">
-        <button class="btn btn-secondary" onclick="pasteCode()" title="Вставить из буфера обмена" style="padding: 10px 16px;">📋 Вставить</button>
+        <button class="btn btn-secondary" onclick="pasteCode()" title="Вставить из буфера обмена" style="padding: 10px 16px;">📋</button>
         <button class="btn btn-secondary" onclick="joinRoom()">🔗 Присоединиться</button>
         <p id="status"></p>
     </div>
 
-    <!-- Экран 2 -->
     <div id="screen-select" class="hidden">
         <h2>🌸 Выберите картинку вместе</h2>
         <div class="code-row">
@@ -515,9 +583,19 @@
         <div id="turn-banner" class="turn-banner">Загрузка...</div>
 
         <div class="image-select" id="image-grid">
-            <img data-index="0" id="img0">
-            <img data-index="1" id="img1">
-            <img data-index="2" id="img2">
+            <div class="img-wrap" data-index="0"><img id="img0" alt="1"></div>
+            <div class="img-wrap" data-index="1"><img id="img1" alt="2"></div>
+            <div class="img-wrap" data-index="2"><img id="img2" alt="3"></div>
+            <div class="img-wrap" data-index="3"><img id="img3" alt="4"></div>
+            <div class="img-wrap" data-index="4"><img id="img4" alt="5"></div>
+            <div class="img-wrap" data-index="5"><img id="img5" alt="6"></div>
+            <div class="img-wrap" data-index="6"><img id="img6" alt="7"></div>
+            <div class="img-wrap" data-index="7"><img id="img7" alt="8"></div>
+            <div class="img-wrap" data-index="8"><img id="img8" alt="9"></div>
+            <div class="img-wrap" data-index="9"><img id="img9" alt="10"></div>
+            <div class="img-wrap" data-index="10"><img id="img10" alt="11"></div>
+            <div class="img-wrap" data-index="11"><img id="img11" alt="12"></div>
+            <div class="img-wrap" data-index="12"><img id="img12" alt="13"></div>
         </div>
 
         <div id="proposal-actions" class="hidden">
@@ -526,9 +604,8 @@
         </div>
     </div>
 
-    <!-- Экран 3 -->
     <div id="screen-draw" class="hidden">
-        <h2>🎨 Раскрашиваем!</h2>
+        <h2>🎨 Раскрашиваем свою половинку!</h2>
         <p id="draw-info" class="tool-info"></p>
 
         <div class="players-bar">
@@ -543,861 +620,1195 @@
         </div>
 
         <div class="tools">
-            <button class="btn btn-warn small" onclick="undo()">↩️ Отменить</button>
-            <button class="btn btn-danger small" onclick="resetCanvas()">🔄 Сброс</button>
+            <button class="btn btn-warn small" onclick="undoStroke()">↩️ Отменить штрих</button>
+            <button class="btn btn-danger small" onclick="resetMyHalf()">🔄 Сброс половины</button>
+            <button class="btn btn-secondary small" id="fillToggleBtn" onclick="toggleFillMode()">🪣 Заливка: выкл</button>
         </div>
 
         <div class="palette" id="palette"></div>
 
-        <div class="custom-color-wrap">
-            <label for="customColor">🌈 Свой цвет:</label>
-            <input type="color" id="customColor" value="#FF69B4">
+        <div class="color-picker-inline">
+            <div style="color:#FFB6C1; font-weight:bold; text-align:center; margin-bottom: 10px;">🎨 Свой цвет</div>
+            <div class="row">
+                <label>🌈</label>
+                <input type="range" id="hueSlider" min="0" max="360" value="330">
+            </div>
+            <div class="row">
+                <label>💧</label>
+                <input type="range" id="satSlider" min="0" max="100" value="100">
+            </div>
+            <div class="row">
+                <label>☀️</label>
+                <input type="range" id="lightSlider" min="0" max="100" value="60">
+            </div>
+            <div class="color-preview-row">
+                <div class="preview" id="colorPreview"></div>
+                <div class="hex" id="hexValue">#FF69B4</div>
+            </div>
+        </div>
 
-            <label for="brushSize" style="margin-left:10px;">🖌️ Размер:</label>
-            <input type="range" id="brushSize" min="2" max="60" value="14" step="1">
-            <span id="brushSizeLabel" style="min-width:32px;">14</span>
+        <div class="brush-wrap">
+            <span>🖌️ Кисть:</span>
+            <input type="range" id="brushSize" min="1" max="80" value="14">
+            <span class="brush-size-label" id="brushSizeLabel">14 px</span>
         </div>
 
         <div class="canvas-stage">
             <div class="canvas-viewport" id="canvas-viewport">
-                <canvas id="canvas" width="1600" height="1600"></canvas>
-            </div>
-            <div class="waiting-side">
-                <div class="ws-avatar" id="ws-avatar">🦊</div>
-                <div class="ws-text">
-                    <b id="ws-name">Друг</b>
-                    тоже рисует...
-                </div>
-                <div class="ws-dots">
-                    <div class="ws-dot"></div>
-                    <div class="ws-dot"></div>
-                    <div class="ws-dot"></div>
+                <div class="zoom-wrap" id="zoom-wrap">
+                    <canvas id="canvas" width="1600" height="1600"></canvas>
                 </div>
             </div>
         </div>
 
-        <p style="color:#E5B8FF; font-weight:bold; margin: 12px 0 5px;">💖 Отправь реакцию другу:</p>
+        <p style="color:#FFB6C1; font-weight:bold; margin: 12px 0 5px;">💖 Отправь реакцию любимому:</p>
         <div class="reactions-panel" id="reactions-panel"></div>
 
-        <div class="comment-bar">
-            <input type="text" id="commentInput" placeholder="Напиши что-нибудь милое..." maxlength="80">
-            <button onclick="sendComment()">💌</button>
-        </div>
+        <p style="color:#FFB6C1; font-weight:bold; margin: 12px 0 5px;">💌 Отправь тёплые слова:</p>
+        <div class="phrase-bar" id="phrase-bar"></div>
 
         <br>
-        <button class="btn" onclick="finish()">✅ Готово!</button>
+        <button class="btn btn-success" onclick="finish()" id="finishBtn">✅ Готово!</button>
     </div>
 
-    <!-- Экран 4 -->
     <div id="screen-result" class="hidden">
         <h2>🎉 Ваш шедевр!</h2>
-        <div style="display:inline-block; padding:10px; background: linear-gradient(135deg, rgba(255,107,157,0.12), rgba(107,157,255,0.12)); border-radius: 22px;">
-            <canvas id="finalCanvas" width="1600" height="1600" style="border-radius:12px; background:white; max-width:100%; height:auto; display:block;"></canvas>
+        <div style="display:inline-block; padding:10px; background: linear-gradient(135deg, rgba(255,107,157,0.2), rgba(255,215,0,0.15)); border-radius: 22px;">
+            <canvas id="finalCanvas" width="1600" height="1600"
+                    style="border-radius:12px; background:white; max-width:100%; height:auto; display:block;"></canvas>
         </div>
         <br>
         <button class="btn btn-success" onclick="downloadImage()">📥 Скачать рисунок</button>
         <button class="btn" onclick="location.reload()">🔄 Ещё раз</button>
     </div>
 </div>
+</div>
 
 <div id="bubbles"></div>
 
-<!-- Плавающая панель зума -->
-<div class="zoom-panel">
+<div class="brush-cursor" id="brushCursor"></div>
+
+<div class="zoom-panel hidden" id="zoomPanel">
     <button class="zoom-btn" onclick="zoomOut()" title="Отдалить">−</button>
     <span class="zoom-info" id="zoom-info">100%</span>
     <button class="zoom-btn" onclick="zoomIn()" title="Приблизить">+</button>
     <button class="zoom-btn" onclick="zoomReset()" title="Сбросить">⟲</button>
 </div>
 
+<div class="tutorial-overlay hidden" id="tutorial">
+    <div class="tutorial-card">
+        <h3>💕 Как играть</h3>
+        <div class="tutorial-step">
+            <div class="icon">🎨</div>
+            <div><b>Своя половинка.</b> Ты раскрашиваешь только свою часть картинки. Вторая половина скрыта — её рисует любимый человек.</div>
+        </div>
+        <div class="tutorial-step">
+            <div class="icon">🖌️</div>
+            <div><b>Кисть.</b> Зажми левую кнопку мыши (или веди пальцем) — рисуешь. Краска не выходит за чёрный контур и за границу половинки.</div>
+        </div>
+        <div class="tutorial-step">
+            <div class="icon">🪣</div>
+            <div><b>Заливка.</b> Включи режим «Заливка» — и тап заполнит целую область цветом. Удобно для больших участков.</div>
+        </div>
+        <div class="tutorial-step">
+            <div class="icon">🌈</div>
+            <div><b>Цвет.</b> Выбери цвет из палитры или настрой свой с помощью ползунков оттенка, насыщенности и яркости.</div>
+        </div>
+        <div class="tutorial-step">
+            <div class="icon">🔍</div>
+            <div><b>Зум и панорама.</b> Колесо мыши — приблизить. Правая кнопка мыши — двигать полотно. На телефоне — два пальца.</div>
+        </div>
+        <div class="tutorial-step">
+            <div class="icon">💌</div>
+            <div><b>Слова и реакции.</b> Отправляй любимому нежные фразы и смайлики прямо во время рисования.</div>
+        </div>
+        <div class="tutorial-step">
+            <div class="icon">✅</div>
+            <div><b>Готово.</b> Когда закончишь — нажми «Готово». Когда оба будут готовы, половинки соединятся!</div>
+        </div>
+        <button class="btn" onclick="closeTutorial()">💖 Понятно!</button>
+    </div>
+</div>
+
 <script src="/socket.io/socket.io.js"></script>
 <script>
-    const socket = io();
-    let roomId = null;
-    let playerIndex = -1;
-    let selectedImage = null;
-    let currentColor = '#FF69B4';
-    let myAvatar = '🐰';
-    let myName = 'Игрок';
-    let myRole = null;
+const socket = io();
 
-    const CANVAS_SIZE = 1600;
-    const SEND_SIZE = 1200;
+let roomId = null;
+let playerIndex = -1;
+let myRole = null;
+let myAvatar = '🐰';
+let myName = 'Игрок';
+let selectedImage = null;
 
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d', { willReadFrequently: true });
-    let history = [];
-    const MAX_HISTORY = 20;
+let currentColor = '#FF69B4';
+let brushSize = 14;
+let fillMode = false;
+let iAmReady = false;
+let partnerReady = false;
 
-    // Маска «можно рисовать» — Uint8Array размером CANVAS_SIZE*CANVAS_SIZE
-    // 1 = можно рисовать (не чёрный пиксель), 0 = нельзя (чёрный контур или фон)
-    let paintMask = null;
+const CANVAS_SIZE = 1600;
+const HALF = CANVAS_SIZE / 2;
+const SEND_SIZE = 1200;
+const TOTAL_IMAGES = 13;
 
-    // Ограничение: рисовать можно только если пиксель исходной картинки НЕ тёмный
-    const DARK_THRESHOLD = 90; // 0-255, чем ниже — тем строже контур
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d', { willReadFrequently: true });
 
-    let currentBrushSize = 14;
-    let isDrawing = false;
-    let lastX = 0, lastY = 0;
+let allowedMask = null;
+const history = [];
+const MAX_HISTORY = 25;
 
-    const COLORS = [
-        '#FF69B4','#FF1493','#FFB6C1','#FFC0CB','#FF8FAB',
-        '#FFD700','#FFA500','#FF8C00','#FF6347','#FF4500',
-        '#FF0000','#DC143C','#B22222','#8B0000','#8B4513',
-        '#D2691E','#F4A460','#DEB887','#F5DEB3','#FFFFE0',
-        '#FFFACD','#ADFF2F','#98FB98','#32CD32','#00FF00',
-        '#008000','#006400','#2E8B57','#00CED1','#40E0D0',
-        '#00BFFF','#1E90FF','#0000FF','#00008B','#4B0082',
-        '#800080','#9400D3','#8B008B','#000000','#808080'
-    ];
-    const AVATARS = ['🐰','🐱','🐻','🐼','🦊','🐸','🐨','🦄','🐧','🐢'];
-    const REACTIONS = ['❤️','😂','😍','👍','🔥','🥰','✨','😭','🎉','💖'];
+const COLORS = [
+    '#FF69B4','#FF1493','#FFB6C1','#FFC0CB','#FF8FAB',
+    '#FFD700','#FFA500','#FF8C00','#FF6347','#FF4500',
+    '#FF0000','#DC143C','#B22222','#8B0000','#8B4513',
+    '#D2691E','#F4A460','#DEB887','#F5DEB3','#FFFFE0',
+    '#FFFACD','#ADFF2F','#98FB98','#32CD32','#00FF00',
+    '#008000','#006400','#2E8B57','#00CED1','#40E0D0',
+    '#00BFFF','#1E90FF','#0000FF','#00008B','#4B0082',
+    '#800080','#9400D3','#8B008B','#000000','#808080'
+];
+const AVATARS = [
+    '🐰','🐱','🐻','🐼','🦊','🐸','🐨','🦄','🐧','🐢',
+    '🐶','🐷','🐮','🐵','🦁','🐯','🐹','🐭','🦝','🦔',
+    '🦋','🐝','🐞','🐌','🐙','🦈','🐬','🐳','🦕','🦖',
+    '🌹','🌷','🌻','🌸','💐','🍓','🍒','🍑','🍰','🧸'
+];
+const REACTIONS = ['❤️','😂','😍','👍','🔥','🥰','✨','😭','🎉','💖'];
+const PHRASES = [
+    '💕 Люблю тебя',
+    '🥰 Ты самый лучший',
+    '😘 Целую',
+    '🌸 Ты моё солнышко',
+    '💖 Обожаю тебя',
+    '🌹 Ты прекрасна',
+    '✨ С тобой волшебно',
+    '💕 Моё сердце — твоё',
+    '🫶 Скучаю',
+    '💫 Ты моё чудо'
+];
+const IMAGE_EXT = ['svg','png'];
 
-    const IMAGE_EXT = ['svg', 'png'];
+const zoomPanel = document.getElementById('zoomPanel');
+const finishBtn = document.getElementById('finishBtn');
 
-    // ============ Копирование / вставка кода ============
-    function copyCode() {
-        const codeText = (document.getElementById('code-display').textContent || '').replace('🔑 Код: ', '').replace('🔑 ', '').trim();
-        if (!codeText || codeText === '----') return;
-        const done = () => {
-            const btn = document.getElementById('copy-code-btn');
-            btn.classList.add('copied');
-            btn.innerHTML = '✅ Скопировано!';
-            setTimeout(() => {
-                btn.classList.remove('copied');
-                btn.innerHTML = '📋 Копировать';
-            }, 1800);
+function buildAvatars() {
+    const p = document.getElementById('avatar-select');
+    p.innerHTML = '';
+    AVATARS.forEach(a => {
+        const el = document.createElement('div');
+        el.className = 'avatar-item' + (a === myAvatar ? ' active' : '');
+        el.textContent = a;
+        el.onclick = () => {
+            myAvatar = a;
+            document.querySelectorAll('.avatar-item').forEach(x => x.classList.remove('active'));
+            el.classList.add('active');
         };
-        navigator.clipboard.writeText(codeText).then(done).catch(() => {
+        p.appendChild(el);
+    });
+}
+buildAvatars();
+
+function copyCode() {
+    const txt = (document.getElementById('code-display').textContent || '').replace('🔑 Код:', '').replace('🔑','').trim();
+    if (!txt || txt === '----') return;
+    const done = () => {
+        const btn = document.getElementById('copy-code-btn');
+        btn.classList.add('copied');
+        btn.innerHTML = '✅ Скопировано!';
+        setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = '📋 Копировать'; }, 1800);
+    };
+    navigator.clipboard.writeText(txt).then(done).catch(() => {
+        const ta = document.createElement('textarea');
+        ta.value = txt; document.body.appendChild(ta); ta.select();
+        document.execCommand('copy'); document.body.removeChild(ta); done();
+    });
+}
+
+async function pasteCode() {
+    const input = document.getElementById('roomInput');
+    try {
+        let text = '';
+        if (navigator.clipboard && navigator.clipboard.readText) {
+            text = await navigator.clipboard.readText();
+        } else {
             const ta = document.createElement('textarea');
-            ta.value = codeText;
-            document.body.appendChild(ta);
-            ta.select();
-            document.execCommand('copy');
+            ta.style.position = 'fixed'; ta.style.left = '-9999px';
+            document.body.appendChild(ta); ta.focus();
+            document.execCommand('paste'); text = ta.value;
             document.body.removeChild(ta);
-            done();
-        });
-    }
-
-    async function pasteCode() {
-        const input = document.getElementById('roomInput');
-        try {
-            let text = '';
-            if (navigator.clipboard && navigator.clipboard.readText) {
-                text = await navigator.clipboard.readText();
-            } else {
-                const ta = document.createElement('textarea');
-                ta.style.position = 'fixed';
-                ta.style.left = '-9999px';
-                document.body.appendChild(ta);
-                ta.focus();
-                document.execCommand('paste');
-                text = ta.value;
-                document.body.removeChild(ta);
-            }
-            text = (text || '').trim().toUpperCase();
-            const match = text.match(/[A-Z0-9]{4}/);
-            if (match) {
-                input.value = match[0];
-                input.style.borderColor = '#66BB6A';
-                setTimeout(() => { input.style.borderColor = ''; }, 1200);
-            } else {
-                input.style.borderColor = '#FF6B6B';
-                setTimeout(() => { input.style.borderColor = ''; }, 1200);
-                document.getElementById('status').innerText = 'В буфере нет кода из 4 символов';
-            }
-        } catch (err) {
-            document.getElementById('status').innerText = 'Не удалось прочитать буфер. Вставь вручную (Ctrl+V).';
         }
-    }
-
-    function buildAvatars() {
-        const p = document.getElementById('avatar-select');
-        p.innerHTML = '';
-        AVATARS.forEach(a => {
-            const el = document.createElement('div');
-            el.className = 'avatar-item' + (a === myAvatar ? ' active' : '');
-            el.textContent = a;
-            el.onclick = () => {
-                myAvatar = a;
-                document.querySelectorAll('.avatar-item').forEach(x => x.classList.remove('active'));
-                el.classList.add('active');
-            };
-            p.appendChild(el);
-        });
-    }
-    buildAvatars();
-
-    function loadPicture(num) {
-        return new Promise((resolve, reject) => {
-            let attempt = 0;
-            function tryLoad() {
-                if (attempt >= IMAGE_EXT.length) return reject(new Error('Не найдено'));
-                const src = 'pic' + num + '.' + IMAGE_EXT[attempt];
-                const img = new Image();
-                img.crossOrigin = 'anonymous';
-                img.onload = () => resolve(img);
-                img.onerror = () => { attempt++; tryLoad(); };
-                img.src = src;
-            }
-            tryLoad();
-        });
-    }
-
-    function loadPreviews() {
-        [1, 2, 3].forEach(num => {
-            loadPicture(num).then(img => {
-                const el = document.getElementById('img' + (num - 1));
-                el.src = img.src;
-            }).catch(() => {
-                document.getElementById('img' + (num - 1)).style.background = '#333';
-            });
-        });
-    }
-    loadPreviews();
-
-    function buildReactions() {
-        const p = document.getElementById('reactions-panel');
-        p.innerHTML = '';
-        REACTIONS.forEach(r => {
-            const el = document.createElement('div');
-            el.className = 'reaction-btn';
-            el.textContent = r;
-            el.onclick = () => {
-                showBubble({ emoji: r, avatar: myAvatar });
-                socket.emit('reaction', { roomId, emoji: r, avatar: myAvatar, name: myName });
-            };
-            p.appendChild(el);
-        });
-    }
-
-    function showBubble({ emoji, text, avatar }) {
-        const bubbles = document.getElementById('bubbles');
-        const b = document.createElement('div');
-        b.className = 'bubble';
-        if (emoji && !text) {
-            b.innerHTML = `<span class="bubble-avatar">${avatar}</span><span class="bubble-emoji">${emoji}</span>`;
-        } else if (text && !emoji) {
-            b.innerHTML = `<span class="bubble-avatar">${avatar}</span><span class="bubble-text">${text}</span>`;
+        text = (text || '').trim().toUpperCase();
+        const match = text.match(/[A-Z0-9]{4}/);
+        if (match) {
+            input.value = match[0];
+            input.style.borderColor = '#66BB6A';
+            setTimeout(() => input.style.borderColor = '', 1200);
         } else {
-            b.innerHTML = `<span class="bubble-avatar">${avatar}</span><span class="bubble-text">${emoji || ''} ${text || ''}</span>`;
+            input.style.borderColor = '#FF6B6B';
+            setTimeout(() => input.style.borderColor = '', 1200);
+            document.getElementById('status').innerText = 'В буфере нет кода из 4 символов';
         }
-        bubbles.appendChild(b);
-        setTimeout(() => {
-            b.classList.add('out');
-            setTimeout(() => b.remove(), 400);
-        }, 3500);
+    } catch (err) {
+        document.getElementById('status').innerText = 'Не удалось прочитать буфер. Вставь вручную (Ctrl+V).';
     }
+}
 
-    socket.on('showReaction', ({ emoji, avatar }) => showBubble({ emoji, avatar }));
-    socket.on('showComment', ({ text, avatar }) => showBubble({ text, avatar }));
+function createRoom() {
+    const nameVal = document.getElementById('nameInput').value.trim();
+    if (nameVal) myName = nameVal;
+    document.getElementById('status').innerText = 'Создаём...';
+    socket.emit('createRoom', { avatar: myAvatar, name: myName });
+}
 
-    function sendComment() {
-        const input = document.getElementById('commentInput');
-        const text = input.value.trim();
-        if (!text) return;
-        showBubble({ text, avatar: myAvatar });
-        socket.emit('comment', { roomId, text, avatar: myAvatar, name: myName });
-        input.value = '';
+function joinRoom() {
+    const id = document.getElementById('roomInput').value.toUpperCase().trim();
+    if (id.length !== 4) {
+        document.getElementById('status').innerText = 'Нужен код из 4 символов!';
+        return;
     }
-    document.getElementById('commentInput').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') sendComment();
+    const nameVal = document.getElementById('nameInput').value.trim();
+    if (nameVal) myName = nameVal;
+    socket.emit('joinRoom', { roomId: id, avatar: myAvatar, name: myName });
+}
+
+function loadPicture(num) {
+    return new Promise((resolve, reject) => {
+        let attempt = 0;
+        function tryLoad() {
+            if (attempt >= IMAGE_EXT.length) return reject(new Error('Не найдено: pic' + num));
+            const src = 'pic' + num + '.' + IMAGE_EXT[attempt];
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.onload = () => resolve(img);
+            img.onerror = () => { attempt++; tryLoad(); };
+            img.src = src;
+        }
+        tryLoad();
     });
+}
 
-    function buildPalette() {
-        const p = document.getElementById('palette');
-        p.innerHTML = '';
-        COLORS.forEach(c => {
-            const s = document.createElement('div');
-            s.className = 'color-swatch' + (c === currentColor ? ' active' : '');
-            s.style.background = c;
-            s.onclick = () => {
-                currentColor = c;
-                document.querySelectorAll('.color-swatch').forEach(el => el.classList.remove('active'));
-                s.classList.add('active');
-            };
-            p.appendChild(s);
+function loadPreviews() {
+    for (let i = 0; i < TOTAL_IMAGES; i++) {
+        loadPicture(i + 1).then(img => {
+            const el = document.getElementById('img' + i);
+            if (el) el.src = img.src;
+        }).catch(() => {
+            const el = document.getElementById('img' + i);
+            if (el) el.style.background = '#333';
         });
     }
+}
+loadPreviews();
 
-    document.getElementById('customColor').addEventListener('input', (e) => {
-        currentColor = e.target.value;
-        document.querySelectorAll('.color-swatch').forEach(el => el.classList.remove('active'));
+function buildReactions() {
+    const p = document.getElementById('reactions-panel');
+    p.innerHTML = '';
+    REACTIONS.forEach(r => {
+        const el = document.createElement('div');
+        el.className = 'reaction-btn';
+        el.textContent = r;
+        el.onclick = () => {
+            showBubble({ emoji: r, avatar: myAvatar });
+            socket.emit('reaction', { roomId, emoji: r, avatar: myAvatar, name: myName });
+        };
+        p.appendChild(el);
     });
+}
 
-    const brushSlider = document.getElementById('brushSize');
-    const brushLabel = document.getElementById('brushSizeLabel');
-    brushSlider.addEventListener('input', (e) => {
-        currentBrushSize = parseInt(e.target.value);
-        brushLabel.textContent = currentBrushSize;
+function buildPhrases() {
+    const p = document.getElementById('phrase-bar');
+    p.innerHTML = '';
+    PHRASES.forEach(txt => {
+        const el = document.createElement('button');
+        el.className = 'phrase-btn';
+        el.textContent = txt;
+        el.onclick = () => {
+            showBubble({ text: txt, avatar: myAvatar });
+            socket.emit('comment', { roomId, text: txt, avatar: myAvatar, name: myName });
+        };
+        p.appendChild(el);
     });
+}
 
-    function createRoom() {
-        const nameVal = document.getElementById('nameInput').value.trim();
-        if (nameVal) myName = nameVal;
-        document.getElementById('status').innerText = 'Создаём...';
-        socket.emit('createRoom', { avatar: myAvatar, name: myName });
+function showBubble({ emoji, text, avatar }) {
+    const bubbles = document.getElementById('bubbles');
+    const b = document.createElement('div');
+    b.className = 'bubble';
+    if (emoji && !text) {
+        b.innerHTML = `<span class="bubble-avatar">${avatar}</span><span class="bubble-emoji">${emoji}</span>`;
+    } else if (text && !emoji) {
+        b.innerHTML = `<span class="bubble-avatar">${avatar}</span><span class="bubble-text">${text}</span>`;
+    } else {
+        b.innerHTML = `<span class="bubble-avatar">${avatar}</span><span class="bubble-text">${emoji || ''} ${text || ''}</span>`;
     }
+    bubbles.appendChild(b);
+    setTimeout(() => {
+        b.classList.add('out');
+        setTimeout(() => b.remove(), 400);
+    }, 3500);
+}
 
-    socket.on('roomCreated', (id) => {
-        roomId = id;
-        myRole = 'host';
-        document.getElementById('status').innerText = '';
-        alert('🎉 Комната создана!\n\nКод: ' + id + '\n\nПередайте его другу.');
-        document.getElementById('screen-login').classList.add('hidden');
-        document.getElementById('screen-select').classList.remove('hidden');
-        document.getElementById('code-display').textContent = '🔑 Код: ' + id;
-        document.getElementById('role-display').innerHTML = `<span class="role-badge">${myAvatar} ${myName} — ИГРОК 1</span>`;
-        document.getElementById('turn-banner').innerHTML = '🎯 <b>Кликните картинку</b>, чтобы предложить её другу.';
-    });
+socket.on('showReaction', ({ emoji, avatar }) => showBubble({ emoji, avatar }));
+socket.on('showComment', ({ text, avatar }) => showBubble({ text, avatar }));
 
-    function joinRoom() {
-        const id = document.getElementById('roomInput').value.toUpperCase().trim();
-        if (id.length !== 4) {
-            document.getElementById('status').innerText = 'Нужен код из 4 символов!';
-            return;
-        }
-        const nameVal = document.getElementById('nameInput').value.trim();
-        if (nameVal) myName = nameVal;
-        socket.emit('joinRoom', { roomId: id, avatar: myAvatar, name: myName });
+socket.on('roomCreated', (id) => {
+    roomId = id;
+    myRole = 'host';
+    document.getElementById('status').innerText = '';
+    document.getElementById('screen-login').classList.add('hidden');
+    document.getElementById('screen-select').classList.remove('hidden');
+    document.getElementById('code-display').textContent = '🔑 Код: ' + id;
+    document.getElementById('role-display').innerHTML = `<span class="role-badge">${myAvatar} ${myName} — ИГРОК 1</span>`;
+    document.getElementById('turn-banner').innerHTML = '🎯 <b>Кликни картинку</b>, чтобы предложить её любимому.';
+});
+
+socket.on('youAre', ({ role, roomId: rid, myAvatar: ma, myName: mn, partnerAvatar, partnerName }) => {
+    roomId = rid;
+    myAvatar = ma;
+    myName = mn;
+    myRole = role;
+
+    if (role === 'host') {
+        playerIndex = 0;
+        document.getElementById('tag-left-avatar').textContent = ma;
+        document.getElementById('tag-left-name').textContent = mn + ' (вы)';
+        document.getElementById('tag-right-avatar').textContent = partnerAvatar;
+        document.getElementById('tag-right-name').textContent = partnerName;
+        document.getElementById('tag-left').classList.add('me');
+        return;
     }
+    playerIndex = 1;
+    document.getElementById('screen-login').classList.add('hidden');
+    document.getElementById('screen-select').classList.remove('hidden');
+    document.getElementById('code-display').textContent = '🔑 Код: ' + rid;
+    document.getElementById('role-display').innerHTML = `<span class="role-badge guest">${myAvatar} ${myName} — ИГРОК 2</span>`;
+    document.getElementById('tag-left-avatar').textContent = partnerAvatar;
+    document.getElementById('tag-left-name').textContent = partnerName;
+    document.getElementById('tag-right-avatar').textContent = ma;
+    document.getElementById('tag-right-name').textContent = mn + ' (вы)';
+    document.getElementById('tag-right').classList.add('me');
+    document.getElementById('turn-banner').innerHTML = '🎯 <b>Кликни картинку</b>, чтобы предложить её любимому.';
+});
 
-    socket.on('youAre', ({ role, roomId: rid, myAvatar: ma, myName: mn, partnerAvatar, partnerName }) => {
-        roomId = rid;
-        myAvatar = ma;
-        myName = mn;
-        myRole = role;
-        if (role === 'host') {
-            playerIndex = 0;
-            document.getElementById('tag-left-avatar').textContent = ma;
-            document.getElementById('tag-left-name').textContent = mn + ' (вы)';
-            document.getElementById('tag-right-avatar').textContent = partnerAvatar;
-            document.getElementById('tag-right-name').textContent = partnerName;
-            document.getElementById('tag-left').classList.add('me');
-            document.getElementById('ws-avatar').textContent = partnerAvatar;
-            document.getElementById('ws-name').textContent = partnerName;
-            return;
-        }
-        playerIndex = 1;
-        document.getElementById('screen-login').classList.add('hidden');
-        document.getElementById('screen-select').classList.remove('hidden');
-        document.getElementById('code-display').textContent = '🔑 Код: ' + rid;
-        document.getElementById('role-display').innerHTML = `<span class="role-badge guest">${myAvatar} ${myName} — ИГРОК 2</span>`;
-        document.getElementById('tag-left-avatar').textContent = partnerAvatar;
-        document.getElementById('tag-left-name').textContent = partnerName;
-        document.getElementById('tag-right-avatar').textContent = ma;
-        document.getElementById('tag-right-name').textContent = mn + ' (вы)';
-        document.getElementById('tag-right').classList.add('me');
-        document.getElementById('turn-banner').innerHTML = '🎯 <b>Кликните картинку</b>, чтобы предложить её другу.';
-        document.getElementById('ws-avatar').textContent = partnerAvatar;
-        document.getElementById('ws-name').textContent = partnerName;
-    });
+socket.on('error', (m) => document.getElementById('status').innerText = '❌ ' + m);
+socket.on('partnerLeft', () => { alert('Любимый вышел!'); location.reload(); });
 
-    socket.on('error', (m) => document.getElementById('status').innerText = '❌ ' + m);
-    socket.on('partnerLeft', () => { alert('Друг вышел!'); location.reload(); });
+const isTouchDevice = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
 
-    document.querySelectorAll('.image-select img').forEach(img => {
-        img.onclick = () => {
-            const idx = parseInt(img.dataset.index);
+document.querySelectorAll('.image-select .img-wrap').forEach(wrap => {
+    const idx = parseInt(wrap.dataset.index);
+
+    if (isTouchDevice) {
+        let zoomed = false;
+        wrap.addEventListener('touchstart', (e) => {
+            if (!zoomed) {
+                document.querySelectorAll('.img-wrap.touch-zoom').forEach(x => x.classList.remove('touch-zoom'));
+                wrap.classList.add('touch-zoom');
+                zoomed = true;
+                e.preventDefault();
+            } else {
+                socket.emit('proposeImage', { roomId, imageIndex: idx, by: myRole });
+            }
+        }, { passive: false });
+    } else {
+        wrap.addEventListener('click', () => {
             socket.emit('proposeImage', { roomId, imageIndex: idx, by: myRole });
-        };
-    });
-
-    socket.on('imageProposed', ({ by, imageIndex }) => {
-        document.querySelectorAll('.image-select img').forEach(img => {
-            const idx = parseInt(img.dataset.index);
-            img.classList.remove('proposed');
-            if (idx === imageIndex) img.classList.add('proposed');
         });
+    }
+});
 
-        if (by === myRole) {
-            document.getElementById('turn-banner').innerHTML = `⏳ Вы предложили картинку №${imageIndex + 1}. Ждём ответа друга...`;
-            document.getElementById('proposal-actions').classList.add('hidden');
-        } else {
-            document.getElementById('turn-banner').innerHTML = `💫 Друг предложил картинку №${imageIndex + 1}. Подтвердите или предложите свою!`;
-            document.getElementById('proposal-actions').classList.remove('hidden');
-        }
+document.addEventListener('touchstart', (e) => {
+    if (!e.target.closest('.img-wrap')) {
+        document.querySelectorAll('.img-wrap.touch-zoom').forEach(x => x.classList.remove('touch-zoom'));
+    }
+}, { passive: true });
+
+socket.on('imageProposed', ({ by, imageIndex }) => {
+    document.querySelectorAll('.image-select .img-wrap').forEach(wrap => {
+        const idx = parseInt(wrap.dataset.index);
+        wrap.classList.remove('proposed');
+        wrap.classList.remove('touch-zoom');
+        if (idx === imageIndex) wrap.classList.add('proposed');
     });
 
-    function confirmProposal() {
-        const proposedImg = document.querySelector('.image-select img.proposed');
-        if (!proposedImg) return;
-        const idx = parseInt(proposedImg.dataset.index);
-        socket.emit('acceptImage', { roomId, imageIndex: idx });
-    }
-
-    function rejectProposal() {
+    if (by === myRole) {
+        document.getElementById('turn-banner').innerHTML = `⏳ Ты предложил(а) картинку №${imageIndex + 1}. Ждём ответа любимого...`;
         document.getElementById('proposal-actions').classList.add('hidden');
-        document.getElementById('turn-banner').innerHTML = '🎯 <b>Кликните свою картинку</b>, чтобы предложить её другу.';
-        document.querySelectorAll('.image-select img.proposed').forEach(x => x.classList.remove('proposed'));
+    } else {
+        document.getElementById('turn-banner').innerHTML = `💫 Любимый предложил картинку №${imageIndex + 1}. Подтверди или предложи свою!`;
+        document.getElementById('proposal-actions').classList.remove('hidden');
     }
+});
 
-    // ================== МАСКА ==================
-    // Строим маску по исходной картинке: где пиксель тёмный — рисовать нельзя
-    function buildMaskFromImage(img) {
-        const tmp = document.createElement('canvas');
-        tmp.width = CANVAS_SIZE;
-        tmp.height = CANVAS_SIZE;
-        const tctx = tmp.getContext('2d', { willReadFrequently: true });
-        tctx.imageSmoothingEnabled = true;
-        tctx.imageSmoothingQuality = 'high';
-        tctx.drawImage(img, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
+function confirmProposal() {
+    const proposed = document.querySelector('.image-select .img-wrap.proposed');
+    if (!proposed) return;
+    const idx = parseInt(proposed.dataset.index);
+    socket.emit('acceptImage', { roomId, imageIndex: idx });
+}
 
-        const src = tctx.getImageData(0, 0, CANVAS_SIZE, CANVAS_SIZE).data;
-        paintMask = new Uint8Array(CANVAS_SIZE * CANVAS_SIZE);
+function rejectProposal() {
+    document.getElementById('proposal-actions').classList.add('hidden');
+    document.getElementById('turn-banner').innerHTML = '🎯 <b>Кликни свою картинку</b>, чтобы предложить её любимому.';
+    document.querySelectorAll('.image-select .img-wrap.proposed').forEach(x => x.classList.remove('proposed'));
+}
 
-        for (let i = 0; i < CANVAS_SIZE * CANVAS_SIZE; i++) {
-            const r = src[i * 4];
-            const g = src[i * 4 + 1];
-            const b = src[i * 4 + 2];
-            const a = src[i * 4 + 3];
-            // Если пиксель прозрачный или тёмный — рисовать нельзя
-            if (a < 32) {
-                paintMask[i] = 0;
-            } else if (r < DARK_THRESHOLD && g < DARK_THRESHOLD && b < DARK_THRESHOLD) {
-                paintMask[i] = 0;
-            } else {
-                paintMask[i] = 1;
-            }
-        }
-    }
+socket.on('startDrawing', ({ imageIndex, playerIndex: pIdx }) => {
+    playerIndex = pIdx;
+    selectedImage = imageIndex;
+    iAmReady = false;
+    partnerReady = false;
 
-    function drawPictureOnCanvas(img) {
-        ctx.fillStyle = 'white';
-        ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-        ctx.imageSmoothingEnabled = true;
-        ctx.imageSmoothingQuality = 'high';
-        ctx.drawImage(img, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
-    }
+    document.getElementById('screen-select').classList.add('hidden');
+    document.getElementById('screen-draw').classList.remove('hidden');
 
-    socket.on('startDrawing', ({ imageIndex, playerIndex: pIdx }) => {
-        playerIndex = pIdx;
-        selectedImage = imageIndex;
-        document.getElementById('screen-select').classList.add('hidden');
-        document.getElementById('screen-draw').classList.remove('hidden');
-        document.getElementById('draw-info').innerHTML = '🖌️ Рисуйте, удерживая левую кнопку мыши (или палец). <b>Правая кнопка</b> — перемещение холста.';
+    zoomPanel.classList.remove('hidden');
+    finishBtn.textContent = '✅ Готово!';
 
-        buildPalette();
-        buildReactions();
+    document.getElementById('draw-info').innerHTML = (playerIndex === 0)
+        ? '🖌️ Твоя часть: <b>левая</b>. ЛКМ — рисовать, ПКМ — двигать, колесо — зум.'
+        : '🖌️ Твоя часть: <b>правая</b>. ЛКМ — рисовать, ПКМ — двигать, колесо — зум.';
 
-        loadPicture(imageIndex + 1).then(img => {
-            drawPictureOnCanvas(img);
-            buildMaskFromImage(img);
-            saveHistory();
-            panX = 0; panY = 0;
-            zoomLevel = 1;
-            applyTransform();
-        });
+    buildPalette();
+    buildReactions();
+    buildPhrases();
+
+    loadPicture(imageIndex + 1).then(img => {
+        initBoard(img);
+        document.getElementById('tutorial').classList.remove('hidden');
     });
+});
 
-    function saveHistory() {
-        history.push(ctx.getImageData(0, 0, CANVAS_SIZE, CANVAS_SIZE));
-        if (history.length > MAX_HISTORY) history.shift();
-    }
+function closeTutorial() {
+    document.getElementById('tutorial').classList.add('hidden');
+}
 
-    function undo() {
-        if (history.length < 2) return;
-        history.pop();
-        const prev = history[history.length - 1];
-        ctx.putImageData(prev, 0, 0);
-        socket.emit('undoData', { roomId, playerIndex });
-    }
+function initBoard(img) {
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(img, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
 
-    socket.on('applyUndo', () => {
-        if (history.length < 2) return;
-        history.pop();
-        const prev = history[history.length - 1];
-        ctx.putImageData(prev, 0, 0);
-    });
-
-    function resetCanvas() {
-        if (!confirm('Очистить весь рисунок?')) return;
-        loadPicture(selectedImage + 1).then(img => {
-            drawPictureOnCanvas(img);
-            saveHistory();
-            socket.emit('resetData', { roomId, playerIndex });
-        });
-    }
-
-    socket.on('applyReset', () => {
-        loadPicture(selectedImage + 1).then(img => {
-            drawPictureOnCanvas(img);
-            saveHistory();
-        });
-    });
-
-    // ================== РИСОВАНИЕ КИСТЬЮ ==================
-    // Рисует линию с учётом маски: пиксели, попадающие на чёрный контур, не закрашиваются
-    function drawLine(x0, y0, x1, y1, color, size) {
-        const radius = size / 2;
-        const steps = Math.max(1, Math.ceil(Math.hypot(x1 - x0, y1 - y0) / (radius * 0.5)));
-
-        // Получаем текущее изображение один раз
-        const imgData = ctx.getImageData(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-        const data = imgData.data;
-
-        const tmp = document.createElement('canvas');
-        tmp.width = tmp.height = 1;
-        const tctx = tmp.getContext('2d');
-        tctx.fillStyle = color;
-        tctx.fillRect(0, 0, 1, 1);
-        const fc = tctx.getImageData(0, 0, 1, 1).data;
-        const fr = fc[0], fg = fc[1], fb = fc[2];
-
-        for (let s = 0; s <= steps; s++) {
-            const t = s / steps;
-            const cx = Math.round(x0 + (x1 - x0) * t);
-            const cy = Math.round(y0 + (y1 - y0) * t);
-
-            const minX = Math.max(0, Math.floor(cx - radius));
-            const maxX = Math.min(CANVAS_SIZE - 1, Math.ceil(cx + radius));
-            const minY = Math.max(0, Math.floor(cy - radius));
-            const maxY = Math.min(CANVAS_SIZE - 1, Math.ceil(cy + radius));
-
-            for (let py = minY; py <= maxY; py++) {
-                for (let px = minX; px <= maxX; px++) {
-                    const dx = px - cx;
-                    const dy = py - cy;
-                    if (dx * dx + dy * dy > radius * radius) continue;
-
-                    const idx = py * CANVAS_SIZE + px;
-                    // Маска: 1 — можно, 0 — нельзя
-                    if (!paintMask || paintMask[idx] !== 1) continue;
-
-                    const pos = idx * 4;
-                    data[pos] = fr;
-                    data[pos + 1] = fg;
-                    data[pos + 2] = fb;
-                    data[pos + 3] = 255;
-                }
-            }
-        }
-
-        ctx.putImageData(imgData, 0, 0);
-    }
-
-    // Отправка штриха по сети — партнёр рисует у себя ту же линию
-    function emitStroke(x0, y0, x1, y1, color, size) {
-        socket.emit('strokeData', {
-            roomId,
-            playerIndex,
-            x0, y0, x1, y1,
-            color,
-            size
-        });
-    }
-
-    socket.on('applyStroke', ({ x0, y0, x1, y1, color, size }) => {
-        drawLine(x0, y0, x1, y1, color, size);
-    });
-
-    // ================== ZOOM / PAN ==================
-    let zoomLevel = 1;
-    let panX = 0, panY = 0;
-
-    const viewport = document.getElementById('canvas-viewport');
-
-    function getBaseSize() {
-        return viewport.clientWidth - 20;
-    }
-
-    function applyTransform() {
-        const base = getBaseSize();
-        canvas.style.width = base + 'px';
-        canvas.style.height = base + 'px';
-        canvas.style.transform = `translate(${panX}px, ${panY}px) scale(${zoomLevel})`;
-        canvas.style.transformOrigin = '0 0';
-        document.getElementById('zoom-info').textContent = Math.round(zoomLevel * 100) + '%';
-    }
-
-    function zoomIn() {
-        const oldZoom = zoomLevel;
-        zoomLevel = Math.min(4, zoomLevel + 0.25);
-        const base = getBaseSize();
-        const cx = base / 2, cy = base / 2;
-        const ratio = zoomLevel / oldZoom;
-        panX = cx - (cx - panX) * ratio;
-        panY = cy - (cy - panY) * ratio;
-        clampPan();
-        applyTransform();
-    }
-
-    function zoomOut() {
-        const oldZoom = zoomLevel;
-        zoomLevel = Math.max(1, zoomLevel - 0.25);
-        const base = getBaseSize();
-        const cx = base / 2, cy = base / 2;
-        const ratio = zoomLevel / oldZoom;
-        panX = cx - (cx - panX) * ratio;
-        panY = cy - (cy - panY) * ratio;
-        clampPan();
-        applyTransform();
-    }
-
-    function zoomReset() {
-        zoomLevel = 1;
-        panX = 0; panY = 0;
-        applyTransform();
-    }
-
-    function clampPan() {
-        const base = getBaseSize();
-        const scaled = base * zoomLevel;
-        const minPan = -(scaled - base);
-        if (panX > 0) panX = 0;
-        if (panX < minPan) panX = minPan;
-        if (panY > 0) panY = 0;
-        if (panY < minPan) panY = minPan;
-    }
-
-    viewport.addEventListener('wheel', (e) => {
-        e.preventDefault();
-        const rect = viewport.getBoundingClientRect();
-        const mx = e.clientX - rect.left - 10;
-        const my = e.clientY - rect.top - 10;
-
-        const oldZoom = zoomLevel;
-        const delta = e.deltaY < 0 ? 0.15 : -0.15;
-        zoomLevel = Math.max(1, Math.min(4, zoomLevel + delta));
-        const ratio = zoomLevel / oldZoom;
-
-        panX = mx - (mx - panX) * ratio;
-        panY = my - (my - panY) * ratio;
-        clampPan();
-        applyTransform();
-    }, { passive: false });
-
-    // ================== КООРДИНАТЫ ==================
-    function getCanvasPos(e) {
-        const rect = canvas.getBoundingClientRect();
-        const scaleX = canvas.width / rect.width;
-        const scaleY = canvas.height / rect.height;
-        let clientX, clientY;
-        if (e.touches && e.touches[0]) {
-            clientX = e.touches[0].clientX;
-            clientY = e.touches[0].clientY;
+    const imgData = ctx.getImageData(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+    const d = imgData.data;
+    for (let i = 0; i < d.length; i += 4) {
+        const r = d[i], g = d[i+1], b = d[i+2];
+        const brightness = (r + g + b) / 3;
+        if (brightness > 90) {
+            d[i] = 255; d[i+1] = 255; d[i+2] = 255; d[i+3] = 255;
         } else {
-            clientX = e.clientX;
-            clientY = e.clientY;
+            d[i] = 0; d[i+1] = 0; d[i+2] = 0; d[i+3] = 255;
         }
-        return {
-            x: (clientX - rect.left) * scaleX,
-            y: (clientY - rect.top) * scaleY
-        };
+    }
+    ctx.putImageData(imgData, 0, 0);
+
+    allowedMask = new Uint8Array(CANVAS_SIZE * CANVAS_SIZE);
+    for (let y = 0; y < CANVAS_SIZE; y++) {
+        for (let x = 0; x < CANVAS_SIZE; x++) {
+            if (playerIndex === 0 && x >= HALF) continue;
+            if (playerIndex === 1 && x < HALF) continue;
+            const idx = y * CANVAS_SIZE + x;
+            const pos = idx * 4;
+            const r = d[pos];
+            if (r > 200) allowedMask[idx] = 1;
+        }
     }
 
-    // ================== СОБЫТИЯ МЫШИ ==================
-    let isPanning = false;
-    let panStartX = 0, panStartY = 0;
-    let panStartPanX = 0, panStartPanY = 0;
+    hidePartnerHalf();
 
-    canvas.addEventListener('mousedown', (e) => {
-        if (e.button === 2) {
-            // Правая кнопка — панорамирование
-            isPanning = true;
-            panStartX = e.clientX;
-            panStartY = e.clientY;
-            panStartPanX = panX;
-            panStartPanY = panY;
-            canvas.classList.add('panning');
-            e.preventDefault();
-            return;
+    zoomLevel = 1; panX = 0; panY = 0;
+    history.length = 0;
+    pushHistory();
+    applyTransform();
+}
+
+function hidePartnerHalf() {
+    if (playerIndex === 0) {
+        ctx.fillStyle = '#1a1a2e';
+        ctx.fillRect(HALF, 0, HALF, CANVAS_SIZE);
+    } else {
+        ctx.fillStyle = '#1a1a2e';
+        ctx.fillRect(0, 0, HALF, CANVAS_SIZE);
+    }
+}
+
+function captureMyHalf() {
+    const startX = playerIndex === 0 ? 0 : HALF;
+    const w = HALF;
+    const h = CANVAS_SIZE;
+    return ctx.getImageData(startX, 0, w, h);
+}
+
+function pushHistory() {
+    history.push(captureMyHalf());
+    if (history.length > MAX_HISTORY) history.shift();
+}
+
+function resetReadyState() {
+    const wasReady = iAmReady;
+    iAmReady = false;
+    updateReadyUI();
+    if (finishBtn) finishBtn.textContent = '✅ Готово!';
+    if (wasReady) {
+        socket.emit('unready', { roomId, playerIndex });
+    }
+}
+
+function updateReadyUI() {
+    const leftTag = document.getElementById('tag-left');
+    const rightTag = document.getElementById('tag-right');
+    leftTag.classList.remove('ready-self', 'ready-partner');
+    rightTag.classList.remove('ready-self', 'ready-partner');
+
+    const myTag = playerIndex === 0 ? leftTag : rightTag;
+    const partnerTag = playerIndex === 0 ? rightTag : leftTag;
+
+    if (iAmReady) myTag.classList.add('ready-self');
+    if (partnerReady) partnerTag.classList.add('ready-partner');
+}
+
+function clearPartnerReadyLocal() {
+    if (partnerReady) {
+        partnerReady = false;
+        updateReadyUI();
+    }
+}
+
+function undoStroke() {
+    if (history.length < 2) return;
+    resetReadyState();
+    history.pop();
+    const prev = history[history.length - 1];
+    const startX = playerIndex === 0 ? 0 : HALF;
+    ctx.putImageData(prev, startX, 0);
+    socket.emit('undoData', { roomId, playerIndex });
+}
+
+socket.on('applyUndo', () => {
+    clearPartnerReadyLocal();
+});
+
+function resetMyHalf() {
+    if (!confirm('Очистить свою половину?')) return;
+    resetReadyState();
+    clearMyHalf();
+    pushHistory();
+    socket.emit('resetData', { roomId, playerIndex });
+}
+
+function clearMyHalf() {
+    const startX = playerIndex === 0 ? 0 : HALF;
+    const w = HALF;
+
+    const imgData = ctx.getImageData(startX, 0, w, CANVAS_SIZE);
+    const d = imgData.data;
+    for (let i = 0; i < d.length; i += 4) {
+        const r = d[i];
+        if (r > 200) {
+            d[i] = 255; d[i+1] = 255; d[i+2] = 255; d[i+3] = 255;
         }
-        if (e.button !== 0) return;
+    }
+    ctx.putImageData(imgData, startX, 0);
+}
 
-        // Левая кнопка — рисование
-        isDrawing = true;
-        const p = getCanvasPos(e);
-        lastX = p.x;
-        lastY = p.y;
-        // Точка
-        drawLine(lastX, lastY, lastX, lastY, currentColor, currentBrushSize);
-        emitStroke(lastX, lastY, lastX, lastY, currentColor, currentBrushSize);
-        e.preventDefault();
+socket.on('applyReset', () => {
+    clearPartnerReadyLocal();
+});
+
+function buildPalette() {
+    const p = document.getElementById('palette');
+    p.innerHTML = '';
+    COLORS.forEach(c => {
+        const s = document.createElement('div');
+        s.className = 'color-swatch' + (c === currentColor ? ' active' : '');
+        s.style.background = c;
+        s.onclick = () => {
+            setColor(c);
+            document.querySelectorAll('.color-swatch').forEach(el => el.classList.remove('active'));
+            s.classList.add('active');
+        };
+        p.appendChild(s);
     });
+}
 
-    canvas.addEventListener('mousemove', (e) => {
-        if (isPanning) {
-            panX = panStartPanX + (e.clientX - panStartX);
-            panY = panStartPanY + (e.clientY - panStartY);
-            clampPan();
-            applyTransform();
-            e.preventDefault();
-            return;
+function setColor(hex) {
+    currentColor = hex;
+    updateBrushCursor();
+    updateColorPreview();
+}
+
+function updateColorPreview() {
+    document.getElementById('colorPreview').style.background = currentColor;
+    document.getElementById('hexValue').textContent = currentColor.toUpperCase();
+}
+
+function hslToHex(h, s, l) {
+    s /= 100; l /= 100;
+    const k = n => (n + h / 30) % 12;
+    const a = s * Math.min(l, 1 - l);
+    const f = n => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+    const toHex = x => Math.round(x * 255).toString(16).padStart(2, '0');
+    return '#' + toHex(f(0)) + toHex(f(8)) + toHex(f(4));
+}
+
+function updateFromHSL() {
+    const h = parseInt(document.getElementById('hueSlider').value);
+    const s = parseInt(document.getElementById('satSlider').value);
+    const l = parseInt(document.getElementById('lightSlider').value);
+    const hex = hslToHex(h, s, l);
+    setColor(hex);
+    document.querySelectorAll('.color-swatch').forEach(el => el.classList.remove('active'));
+    document.getElementById('satSlider').style.background =
+        `linear-gradient(to right, hsl(${h}, 0%, ${l}%), hsl(${h}, 100%, ${l}%))`;
+    document.getElementById('lightSlider').style.background =
+        `linear-gradient(to right, #000, hsl(${h}, ${s}%, 50%), #fff)`;
+}
+
+document.getElementById('hueSlider').addEventListener('input', updateFromHSL);
+document.getElementById('satSlider').addEventListener('input', updateFromHSL);
+document.getElementById('lightSlider').addEventListener('input', updateFromHSL);
+
+(function initHSL() {
+    const hex = '#FF69B4';
+    const r = parseInt(hex.slice(1,3), 16) / 255;
+    const g = parseInt(hex.slice(3,5), 16) / 255;
+    const b = parseInt(hex.slice(5,7), 16) / 255;
+    const max = Math.max(r,g,b), min = Math.min(r,g,b);
+    let h, s, l = (max + min) / 2;
+    if (max === min) { h = 0; s = 0; }
+    else {
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) {
+            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+            case g: h = (b - r) / d + 2; break;
+            case b: h = (r - g) / d + 4; break;
         }
-        if (!isDrawing) return;
-        const p = getCanvasPos(e);
-        drawLine(lastX, lastY, p.x, p.y, currentColor, currentBrushSize);
-        emitStroke(lastX, lastY, p.x, p.y, currentColor, currentBrushSize);
-        lastX = p.x;
-        lastY = p.y;
-        e.preventDefault();
-    });
+        h *= 60;
+    }
+    document.getElementById('hueSlider').value = Math.round(h);
+    document.getElementById('satSlider').value = Math.round(s * 100);
+    document.getElementById('lightSlider').value = Math.round(l * 100);
+    updateColorPreview();
+    document.getElementById('satSlider').style.background =
+        `linear-gradient(to right, hsl(${h}, 0%, ${l*100}%), hsl(${h}, 100%, ${l*100}%))`;
+    document.getElementById('lightSlider').style.background =
+        `linear-gradient(to right, #000, hsl(${h}, ${s*100}%, 50%), #fff)`;
+})();
 
-    window.addEventListener('mouseup', (e) => {
-        if (isPanning) {
-            isPanning = false;
-            canvas.classList.remove('panning');
-        }
-        if (isDrawing) {
-            isDrawing = false;
-            saveHistory();
-            socket.emit('saveHistoryRequest', { roomId, playerIndex });
-        }
-    });
+const brushSizeInput = document.getElementById('brushSize');
+const brushSizeLabel = document.getElementById('brushSizeLabel');
 
-    canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+brushSizeInput.addEventListener('input', () => {
+    brushSize = parseInt(brushSizeInput.value);
+    brushSizeLabel.textContent = brushSize + ' px';
+    updateBrushCursor();
+});
 
-    // ================== СОБЫТИЯ ТАЧА ==================
-    let touchDrawing = false;
-    let touchLastX = 0, touchLastY = 0;
-    let touchPanning = false;
-    let touchPanStartX = 0, touchPanStartY = 0;
-    let touchPanStartPanX = 0, touchPanStartPanY = 0;
-    let touchStartTime = 0;
-    let touchStartX = 0, touchStartY = 0;
-    let longPressTimer = null;
-    let isLongPress = false;
+function toggleFillMode() {
+    fillMode = !fillMode;
+    const btn = document.getElementById('fillToggleBtn');
+    if (fillMode) {
+        btn.innerHTML = '🪣 Заливка: вкл';
+        btn.classList.add('btn-success');
+        btn.classList.remove('btn-secondary');
+    } else {
+        btn.innerHTML = '🪣 Заливка: выкл';
+        btn.classList.remove('btn-success');
+        btn.classList.add('btn-secondary');
+    }
+    updateBrushCursor();
+}
 
-    canvas.addEventListener('touchstart', (e) => {
-        if (e.touches.length === 2) {
-            // Два пальца — панорамирование
-            touchPanning = true;
-            touchPanStartX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
-            touchPanStartY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
-            touchPanStartPanX = panX;
-            touchPanStartPanY = panY;
-            e.preventDefault();
-            return;
-        }
-        if (e.touches.length === 1) {
-            touchStartTime = Date.now();
-            touchStartX = e.touches[0].clientX;
-            touchStartY = e.touches[0].clientY;
-            isLongPress = false;
+function strokeSegment(x0, y0, x1, y1, color, size) {
+    const dx = x1 - x0;
+    const dy = y1 - y0;
+    const dist = Math.hypot(dx, dy);
+    const step = Math.max(1, Math.floor(dist));
+    const r = size / 2;
+    const imgData = ctx.getImageData(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+    const d = imgData.data;
 
-            // Долгое нажатие (600мс) — панорамирование
-            longPressTimer = setTimeout(() => {
-                isLongPress = true;
-                touchPanning = true;
-                touchPanStartX = e.touches[0].clientX;
-                touchPanStartY = e.touches[0].clientY;
-                touchPanStartPanX = panX;
-                touchPanStartPanY = panY;
-            }, 600);
+    const tmp = document.createElement('canvas');
+    tmp.width = tmp.height = 1;
+    const tc = tmp.getContext('2d');
+    tc.fillStyle = color;
+    tc.fillRect(0, 0, 1, 1);
+    const pc = tc.getImageData(0, 0, 1, 1).data;
+    const cr = pc[0], cg = pc[1], cb = pc[2];
 
-            // Начинаем рисование сразу, но если сработает долгое нажатие — отменим
-            const p = getCanvasPos(e);
-            touchLastX = p.x;
-            touchLastY = p.y;
-            touchDrawing = true;
-            // Не рисуем точку сразу, дождёмся подтверждения, что это не панорамирование
-        }
-    }, { passive: false });
+    for (let s = 0; s <= step; s++) {
+        const t = step === 0 ? 0 : s / step;
+        const cx = Math.round(x0 + dx * t);
+        const cy = Math.round(y0 + dy * t);
+        const minX = Math.max(0, Math.floor(cx - r));
+        const maxX = Math.min(CANVAS_SIZE - 1, Math.ceil(cx + r));
+        const minY = Math.max(0, Math.floor(cy - r));
+        const maxY = Math.min(CANVAS_SIZE - 1, Math.ceil(cy + r));
 
-    canvas.addEventListener('touchmove', (e) => {
-        if (touchPanning && e.touches.length >= 1) {
-            const cx = e.touches.length >= 2
-                ? (e.touches[0].clientX + e.touches[1].clientX) / 2
-                : e.touches[0].clientX;
-            const cy = e.touches.length >= 2
-                ? (e.touches[0].clientY + e.touches[1].clientY) / 2
-                : e.touches[0].clientY;
-            panX = touchPanStartPanX + (cx - touchPanStartX);
-            panY = touchPanStartPanY + (cy - touchPanStartY);
-            clampPan();
-            applyTransform();
-            e.preventDefault();
-            return;
-        }
-        if (touchDrawing && !isLongPress && e.touches.length === 1) {
-            const p = getCanvasPos(e);
-            drawLine(touchLastX, touchLastY, p.x, p.y, currentColor, currentBrushSize);
-            emitStroke(touchLastX, touchLastY, p.x, p.y, currentColor, currentBrushSize);
-            touchLastX = p.x;
-            touchLastY = p.y;
-            e.preventDefault();
-        }
-    }, { passive: false });
+        for (let y = minY; y <= maxY; y++) {
+            for (let x = minX; x <= maxX; x++) {
+                const ddx = x - cx, ddy = y - cy;
+                if (ddx*ddx + ddy*ddy > r*r) continue;
 
-    canvas.addEventListener('touchend', (e) => {
-        clearTimeout(longPressTimer);
-        if (touchPanning) {
-            if (e.touches.length === 0) {
-                touchPanning = false;
+                const idx = y * CANVAS_SIZE + x;
+                if (!allowedMask[idx]) continue;
+
+                const pos = idx * 4;
+                d[pos] = cr;
+                d[pos+1] = cg;
+                d[pos+2] = cb;
+                d[pos+3] = 255;
             }
+        }
+    }
+    ctx.putImageData(imgData, 0, 0);
+}
+
+function floodFill(startX, startY, fillColor) {
+    if (!allowedMask) return;
+    if (playerIndex === 0 && startX >= HALF) return;
+    if (playerIndex === 1 && startX < HALF) return;
+
+    const w = CANVAS_SIZE, h = CANVAS_SIZE;
+    const imgData = ctx.getImageData(0, 0, w, h);
+    const data = imgData.data;
+    const startPos = (startY * w + startX) * 4;
+    const startR = data[startPos];
+    const startG = data[startPos + 1];
+    const startB = data[startPos + 2];
+
+    if (startR < 90 && startG < 90 && startB < 90) return;
+
+    const tmp = document.createElement('canvas');
+    tmp.width = tmp.height = 1;
+    const tctx = tmp.getContext('2d');
+    tctx.fillStyle = fillColor;
+    tctx.fillRect(0, 0, 1, 1);
+    const fc = tctx.getImageData(0, 0, 1, 1).data;
+    const fillR = fc[0], fillG = fc[1], fillB = fc[2];
+
+    if (Math.abs(startR - fillR) < 6 && Math.abs(startG - fillG) < 6 && Math.abs(startB - fillB) < 6) return;
+
+    const tolerance = 60;
+    const visited = new Uint8Array(w * h);
+    const stack = [[startX, startY]];
+
+    while (stack.length) {
+        const [x, y] = stack.pop();
+        if (x < 0 || x >= w || y < 0 || y >= h) continue;
+        if (playerIndex === 0 && x >= HALF) continue;
+        if (playerIndex === 1 && x < HALF) continue;
+        const idx = y * w + x;
+        if (visited[idx]) continue;
+        visited[idx] = 1;
+        const pos = idx * 4;
+        if (!allowedMask[idx]) continue;
+        if (Math.abs(data[pos] - startR) >= tolerance) continue;
+        if (Math.abs(data[pos+1] - startG) >= tolerance) continue;
+        if (Math.abs(data[pos+2] - startB) >= tolerance) continue;
+
+        data[pos] = fillR;
+        data[pos+1] = fillG;
+        data[pos+2] = fillB;
+        data[pos+3] = 255;
+
+        stack.push([x+1, y], [x-1, y], [x, y+1], [x, y-1]);
+    }
+
+    ctx.putImageData(imgData, 0, 0);
+}
+
+const viewport = document.getElementById('canvas-viewport');
+const wrap = document.getElementById('zoom-wrap');
+
+let zoomLevel = 1;
+let panX = 0, panY = 0;
+
+function getBaseSize() {
+    /* viewport квадратный (aspect-ratio: 1/1), обе стороны одинаковы */
+    return Math.min(viewport.clientWidth, viewport.clientHeight);
+}
+
+function applyTransform() {
+    const base = getBaseSize();
+    canvas.style.width = base + 'px';
+    canvas.style.height = base + 'px';
+    wrap.style.transform = `translate(${panX}px, ${panY}px) scale(${zoomLevel})`;
+    document.getElementById('zoom-info').textContent = Math.round(zoomLevel * 100) + '%';
+}
+
+function zoomIn()  { zoomAtCenter(1.25); }
+function zoomOut() { zoomAtCenter(1/1.25); }
+function zoomReset() { zoomLevel = 1; panX = 0; panY = 0; applyTransform(); }
+
+function zoomAtCenter(factor) {
+    const oldZoom = zoomLevel;
+    zoomLevel = Math.max(1, Math.min(6, zoomLevel * factor));
+    const base = getBaseSize();
+    const cx = base / 2, cy = base / 2;
+    const ratio = zoomLevel / oldZoom;
+    panX = cx - (cx - panX) * ratio;
+    panY = cy - (cy - panY) * ratio;
+    clampPan();
+    applyTransform();
+}
+
+function clampPan() {
+    const base = getBaseSize();
+    const scaled = base * zoomLevel;
+    const minPan = -(scaled - base);
+    if (panX > 0) panX = 0;
+    if (panX < minPan) panX = minPan;
+    if (panY > 0) panY = 0;
+    if (panY < minPan) panY = minPan;
+}
+
+function getPos(clientX, clientY) {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    return {
+        x: Math.round((clientX - rect.left) * scaleX),
+        y: Math.round((clientY - rect.top) * scaleY)
+    };
+}
+
+let drawing = false;
+let lastX = null, lastY = null;
+
+let panning = false;
+let panStartX = 0, panStartY = 0;
+let panStartPanX = 0, panStartPanY = 0;
+
+const brushCursor = document.getElementById('brushCursor');
+
+function updateBrushCursor() {
+    if (fillMode) {
+        brushCursor.style.border = 'none';
+        brushCursor.style.background = 'rgba(0,0,0,0.08)';
+        brushCursor.style.width = '26px';
+        brushCursor.style.height = '26px';
+    } else {
+        brushCursor.style.background = 'transparent';
+        brushCursor.style.border = '2px solid rgba(0,0,0,0.85)';
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = rect.width / canvas.width;
+        const visual = brushSize * scaleX;
+        brushCursor.style.width = visual + 'px';
+        brushCursor.style.height = visual + 'px';
+    }
+}
+
+viewport.addEventListener('mousemove', (e) => {
+    if (panning) {
+        panX = panStartPanX + (e.clientX - panStartX);
+        panY = panStartPanY + (e.clientY - panStartY);
+        clampPan();
+        applyTransform();
+        brushCursor.style.display = 'none';
+        return;
+    }
+    const rect = canvas.getBoundingClientRect();
+    if (e.clientX >= rect.left && e.clientX <= rect.right &&
+        e.clientY >= rect.top && e.clientY <= rect.bottom) {
+        updateBrushCursor();
+        brushCursor.style.display = 'block';
+        brushCursor.style.left = e.clientX + 'px';
+        brushCursor.style.top = e.clientY + 'px';
+    } else {
+        brushCursor.style.display = 'none';
+    }
+
+    if (!drawing) return;
+
+    const p = getPos(e.clientX, e.clientY);
+    if (!isInAllowedHalf(p.x)) {
+        lastX = null; lastY = null;
+        return;
+    }
+    if (lastX === null) {
+        lastX = p.x; lastY = p.y;
+        return;
+    }
+
+    strokeSegment(lastX, lastY, p.x, p.y, currentColor, brushSize);
+    socket.emit('strokeData', {
+        roomId, playerIndex,
+        stroke: { x0: lastX, y0: lastY, x1: p.x, y1: p.y, color: currentColor, size: brushSize }
+    });
+
+    lastX = p.x; lastY = p.y;
+});
+
+viewport.addEventListener('mouseleave', () => {
+    brushCursor.style.display = 'none';
+});
+
+viewport.addEventListener('contextmenu', e => e.preventDefault());
+
+viewport.addEventListener('mousedown', (e) => {
+    if (e.button === 2) {
+        panning = true;
+        panStartX = e.clientX; panStartY = e.clientY;
+        panStartPanX = panX; panStartPanY = panY;
+        canvas.classList.add('panning');
+        brushCursor.style.display = 'none';
+        e.preventDefault();
+        return;
+    }
+    if (e.button !== 0) return;
+
+    const p = getPos(e.clientX, e.clientY);
+    if (!isInAllowedHalf(p.x)) return;
+
+    resetReadyState();
+
+    if (fillMode) {
+        pushHistory();
+        floodFill(p.x, p.y, currentColor);
+        socket.emit('fillData', { roomId, playerIndex, data: { x: p.x, y: p.y, color: currentColor } });
+        e.preventDefault();
+        return;
+    }
+
+    drawing = true;
+    lastX = p.x; lastY = p.y;
+
+    pushHistory();
+
+    strokeSegment(p.x, p.y, p.x, p.y, currentColor, brushSize);
+
+    socket.emit('strokeData', {
+        roomId, playerIndex,
+        stroke: { x0: p.x, y0: p.y, x1: p.x, y1: p.y, color: currentColor, size: brushSize }
+    });
+
+    e.preventDefault();
+});
+
+window.addEventListener('mouseup', (e) => {
+    if (panning) {
+        panning = false;
+        canvas.classList.remove('panning');
+        return;
+    }
+    if (drawing) {
+        drawing = false;
+        lastX = null; lastY = null;
+    }
+});
+
+viewport.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const rect = viewport.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+
+    const oldZoom = zoomLevel;
+    const factor = e.deltaY < 0 ? 1.15 : 1/1.15;
+    zoomLevel = Math.max(1, Math.min(6, zoomLevel * factor));
+    const ratio = zoomLevel / oldZoom;
+
+    panX = mx - (mx - panX) * ratio;
+    panY = my - (my - panY) * ratio;
+    clampPan();
+    applyTransform();
+    updateBrushCursor();
+}, { passive: false });
+
+let touchMode = null;
+let tStartDist = 0, tStartZoom = 1, tStartMidX = 0, tStartMidY = 0;
+let tStartPanX = 0, tStartPanY = 0;
+
+viewport.addEventListener('touchstart', (e) => {
+    if (e.touches.length === 2) {
+        touchMode = 'pan';
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        tStartDist = Math.hypot(dx, dy);
+        tStartZoom = zoomLevel;
+        const rect = viewport.getBoundingClientRect();
+        tStartMidX = (e.touches[0].clientX + e.touches[1].clientX) / 2 - rect.left;
+        tStartMidY = (e.touches[0].clientY + e.touches[1].clientY) / 2 - rect.top;
+        tStartPanX = panX; tStartPanY = panY;
+        e.preventDefault();
+        return;
+    }
+    if (e.touches.length === 1) {
+        touchMode = 'draw';
+        const p = getPos(e.touches[0].clientX, e.touches[0].clientY);
+        if (!isInAllowedHalf(p.x)) return;
+
+        resetReadyState();
+
+        if (fillMode) {
+            pushHistory();
+            floodFill(p.x, p.y, currentColor);
+            socket.emit('fillData', { roomId, playerIndex, data: { x: p.x, y: p.y, color: currentColor } });
+            e.preventDefault();
             return;
         }
-        if (touchDrawing && !isLongPress) {
-            touchDrawing = false;
-            saveHistory();
-            socket.emit('saveHistoryRequest', { roomId, playerIndex });
+
+        drawing = true;
+        lastX = p.x; lastY = p.y;
+        pushHistory();
+        strokeSegment(p.x, p.y, p.x, p.y, currentColor, brushSize);
+        socket.emit('strokeData', {
+            roomId, playerIndex,
+            stroke: { x0: p.x, y0: p.y, x1: p.x, y1: p.y, color: currentColor, size: brushSize }
+        });
+        e.preventDefault();
+    }
+}, { passive: false });
+
+viewport.addEventListener('touchmove', (e) => {
+    if (touchMode === 'pan' && e.touches.length === 2) {
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        const dist = Math.hypot(dx, dy);
+        const rect = viewport.getBoundingClientRect();
+        const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2 - rect.left;
+        const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2 - rect.top;
+
+        const newZoom = Math.max(1, Math.min(6, tStartZoom * (dist / tStartDist)));
+        const ratio = newZoom / tStartZoom;
+        zoomLevel = newZoom;
+        const cx = midX, cy = midY;
+        panX = cx - (cx - tStartPanX) * ratio;
+        panY = cy - (cy - tStartPanY) * ratio;
+
+        clampPan();
+        applyTransform();
+        e.preventDefault();
+        return;
+    }
+    if (touchMode === 'draw' && e.touches.length === 1 && drawing) {
+        const p = getPos(e.touches[0].clientX, e.touches[0].clientY);
+        if (!isInAllowedHalf(p.x)) { lastX = null; lastY = null; e.preventDefault(); return; }
+        if (lastX === null) { lastX = p.x; lastY = p.y; return; }
+        strokeSegment(lastX, lastY, p.x, p.y, currentColor, brushSize);
+        socket.emit('strokeData', {
+            roomId, playerIndex,
+            stroke: { x0: lastX, y0: lastY, x1: p.x, y1: p.y, color: currentColor, size: brushSize }
+        });
+        lastX = p.x; lastY = p.y;
+        e.preventDefault();
+    }
+}, { passive: false });
+
+viewport.addEventListener('touchend', (e) => {
+    if (e.touches.length < 2 && touchMode === 'pan') {
+        touchMode = null;
+    }
+    if (e.touches.length === 0) {
+        touchMode = null;
+        drawing = false;
+        lastX = null; lastY = null;
+    }
+});
+
+function isInAllowedHalf(x) {
+    if (playerIndex === 0) return x < HALF;
+    if (playerIndex === 1) return x >= HALF;
+    return false;
+}
+
+socket.on('applyStroke', ({ stroke }) => {
+    clearPartnerReadyLocal();
+    if (!allowedMask || !stroke) return;
+    strokeSegment(stroke.x0, stroke.y0, stroke.x1, stroke.y1, stroke.color, stroke.size);
+});
+
+socket.on('applyFill', ({ data }) => {
+    clearPartnerReadyLocal();
+    if (!allowedMask || !data) return;
+    floodFill(data.x, data.y, data.color);
+});
+
+socket.on('partnerUnready', () => {
+    clearPartnerReadyLocal();
+});
+
+function finish() {
+    const tmp = document.createElement('canvas');
+    tmp.width = SEND_SIZE;
+    tmp.height = SEND_SIZE;
+    const tctx = tmp.getContext('2d');
+    tctx.imageSmoothingEnabled = true;
+    tctx.imageSmoothingQuality = 'high';
+
+    const startX = playerIndex === 0 ? 0 : HALF;
+    tctx.drawImage(
+        canvas,
+        startX, 0, HALF, CANVAS_SIZE,
+        0, 0, SEND_SIZE, SEND_SIZE
+    );
+
+    const imageData = tmp.toDataURL('image/png', 1.0);
+    iAmReady = true;
+    updateReadyUI();
+    finishBtn.textContent = '⏳ Ждём любимого...';
+    socket.emit('notifyFinished', { roomId, playerIndex, name: myName, avatar: myAvatar });
+    socket.emit('finishDrawing', { roomId, playerIndex, imageData });
+}
+
+socket.on('partnerFinished', ({ name, avatar }) => {
+    partnerReady = true;
+    updateReadyUI();
+    showBubble({ emoji: '💚', avatar, text: `${name} уже готов(а)!` });
+});
+
+socket.on('mergeImages', (drawings) => {
+    document.getElementById('screen-draw').classList.add('hidden');
+    zoomPanel.classList.add('hidden');
+    document.getElementById('screen-result').classList.remove('hidden');
+
+    const fc = document.getElementById('finalCanvas');
+    const fx = fc.getContext('2d');
+    fx.imageSmoothingEnabled = true;
+    fx.imageSmoothingQuality = 'high';
+    fx.fillStyle = 'white';
+    fx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+
+    const i1 = new Image();
+    const i2 = new Image();
+    i1.src = drawings[0];
+    i2.src = drawings[1];
+
+    let loaded = 0;
+    function check() {
+        loaded++;
+        if (loaded === 2) {
+            fx.drawImage(i1, 0, 0, SEND_SIZE, SEND_SIZE, 0, 0, HALF, CANVAS_SIZE);
+            fx.drawImage(i2, 0, 0, SEND_SIZE, SEND_SIZE, HALF, 0, HALF, CANVAS_SIZE);
         }
-        touchDrawing = false;
-        isLongPress = false;
-    });
-
-    canvas.addEventListener('touchcancel', () => {
-        clearTimeout(longPressTimer);
-        touchDrawing = false;
-        touchPanning = false;
-        isLongPress = false;
-    });
-
-    // Сохранение истории по запросу партнёра (для отмены)
-    socket.on('saveHistoryRequest', () => {
-        // Ничего не делаем — история у каждого своя
-    });
-
-    // ================== ФИНАЛ ==================
-    function finish() {
-        const tmp = document.createElement('canvas');
-        tmp.width = SEND_SIZE; tmp.height = SEND_SIZE;
-        const tctx = tmp.getContext('2d');
-        tctx.imageSmoothingEnabled = true;
-        tctx.imageSmoothingQuality = 'high';
-        tctx.drawImage(canvas, 0, 0, SEND_SIZE, SEND_SIZE);
-        const imageData = tmp.toDataURL('image/png', 1.0);
-
-        document.getElementById('draw-info').innerText = '⏳ Ждём друга...';
-        socket.emit('notifyFinished', { roomId, playerIndex, name: myName, avatar: myAvatar });
-        socket.emit('finishDrawing', { roomId, playerIndex, imageData });
     }
+    i1.onload = check;
+    i2.onload = check;
+});
 
-    socket.on('partnerFinished', ({ name, avatar }) => {
-        showBubble({ emoji: '✅', avatar, text: `${name} нажал «Готово»!` });
-    });
+function downloadImage() {
+    const fc = document.getElementById('finalCanvas');
+    const link = document.createElement('a');
+    link.download = 'наша_картина_' + roomId + '.png';
+    link.href = fc.toDataURL('image/png');
+    link.click();
+}
 
-    socket.on('mergeImages', (drawings) => {
-        document.getElementById('screen-draw').classList.add('hidden');
-        document.getElementById('screen-result').classList.remove('hidden');
-        const fc = document.getElementById('finalCanvas');
-        const fx = fc.getContext('2d');
-        fx.imageSmoothingEnabled = true;
-        fx.imageSmoothingQuality = 'high';
-        fx.fillStyle = 'white';
-        fx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+window.addEventListener('resize', () => {
+    clampPan();
+    applyTransform();
+    updateBrushCursor();
+});
+requestAnimationFrame(applyTransform);
 
-        // Теперь у нас общий холст, оба игрока рисуют на одном и том же.
-        // Берём рисунок любого (они одинаковые), но если вдруг разные — накладываем.
-        const i1 = new Image();
-        i1.src = drawings[0];
-        i1.onload = () => {
-            fx.drawImage(i1, 0, 0, SEND_SIZE, SEND_SIZE, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
-        };
-    });
-
-    function downloadImage() {
-        const fc = document.getElementById('finalCanvas');
-        const link = document.createElement('a');
-        link.download = 'наша_картина_' + roomId + '.png';
-        link.href = fc.toDataURL('image/png');
-        link.click();
-    }
-
-    // ================== ИНИЦИАЛИЗАЦИЯ ==================
-    requestAnimationFrame(applyTransform);
-    window.addEventListener('resize', () => { clampPan(); applyTransform(); });
+viewport.addEventListener('touchmove', (e) => {
+    if (touchMode === 'pan' || drawing) e.preventDefault();
+}, { passive: false });
 </script>
 </body>
 </html>
