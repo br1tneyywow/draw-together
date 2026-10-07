@@ -1,1432 +1,1403 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>🎨 Рисуем вместе</title>
-    <style>
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            margin: 0; padding: 10px;
-            min-height: 100vh;
-            background:
-                radial-gradient(circle at 15% 15%, rgba(255, 107, 157, 0.15) 0%, transparent 45%),
-                radial-gradient(circle at 85% 85%, rgba(107, 157, 255, 0.15) 0%, transparent 45%),
-                linear-gradient(135deg, #131324 0%, #1a1a35 50%, #0f1c3f 100%);
-            color: #eee;
-            display: flex; align-items: center; justify-content: center;
-            overflow-x: hidden;
-        }
-        .container {
-            background: linear-gradient(145deg, rgba(35, 35, 56, 0.95) 0%, rgba(42, 42, 68, 0.95) 100%);
-            padding: 20px;
-            border-radius: 25px;
-            box-shadow: 0 10px 60px rgba(198, 107, 255, 0.25), 0 0 0 1px rgba(255, 182, 193, 0.15);
-            max-width: 1000px; width: 100%;
-            text-align: center;
-            color: #eee;
-        }
-        h1 {
-            background: linear-gradient(135deg, #FFB6C1, #C66BFF, #9DCFFF);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin: 5px 0 20px; font-size: 30px;
-        }
-        h2 { color: #E5B8FF; margin: 5px 0; font-size: 22px; }
-        .hidden { display: none !important; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🎨 Рисуем вместе</title>
+<style>
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        margin: 0; padding: 10px;
+        min-height: 100vh;
+        background:
+            radial-gradient(circle at 15% 15%, rgba(255, 107, 157, 0.15) 0%, transparent 45%),
+            radial-gradient(circle at 85% 85%, rgba(107, 157, 255, 0.15) 0%, transparent 45%),
+            linear-gradient(135deg, #131324 0%, #1a1a35 50%, #0f1c3f 100%);
+        color: #eee;
+        display: flex; align-items: center; justify-content: center;
+        overflow-x: hidden;
+    }
+    .container {
+        background: linear-gradient(145deg, rgba(35, 35, 56, 0.95) 0%, rgba(42, 42, 68, 0.95) 100%);
+        padding: 20px;
+        border-radius: 25px;
+        box-shadow: 0 10px 60px rgba(198, 107, 255, 0.25), 0 0 0 1px rgba(255, 182, 193, 0.15);
+        max-width: 1000px; width: 100%;
+        text-align: center;
+        color: #eee;
+    }
+    h1 {
+        background: linear-gradient(135deg, #FFB6C1, #C66BFF, #9DCFFF);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin: 5px 0 20px; font-size: 30px;
+    }
+    h2 { color: #E5B8FF; margin: 5px 0; font-size: 22px; }
+    .hidden { display: none !important; }
 
-        .btn {
-            padding: 12px 24px; margin: 4px;
-            cursor: pointer;
-            background: linear-gradient(135deg, #FF6B9D 0%, #C66BFF 100%);
-            color: white; border: none;
-            border-radius: 14px;
-            font-size: 15px; font-weight: bold;
-            box-shadow: 0 4px 20px rgba(198, 107, 255, 0.4);
-            transition: all 0.2s;
-        }
-        .btn:hover { transform: translateY(-3px); }
-        .btn:active { transform: translateY(-1px) scale(0.98); }
-        .btn-secondary { background: linear-gradient(135deg, #6BCFFF 0%, #6B9DFF 100%); }
-        .btn-warn { background: linear-gradient(135deg, #FFB74D 0%, #FF7043 100%); }
-        .btn-danger { background: linear-gradient(135deg, #FF6B6B 0%, #E53935 100%); }
-        .btn-success { background: linear-gradient(135deg, #66BB6A 0%, #43A047 100%); }
-        .btn.small { padding: 8px 14px; font-size: 13px; }
+    .btn {
+        padding: 12px 24px; margin: 4px;
+        cursor: pointer;
+        background: linear-gradient(135deg, #FF6B9D 0%, #C66BFF 100%);
+        color: white; border: none;
+        border-radius: 14px;
+        font-size: 15px; font-weight: bold;
+        box-shadow: 0 4px 20px rgba(198, 107, 255, 0.4);
+        transition: all 0.2s;
+    }
+    .btn:hover { transform: translateY(-3px); }
+    .btn:active { transform: translateY(-1px) scale(0.98); }
+    .btn-secondary { background: linear-gradient(135deg, #6BCFFF 0%, #6B9DFF 100%); }
+    .btn-warn { background: linear-gradient(135deg, #FFB74D 0%, #FF7043 100%); }
+    .btn-danger { background: linear-gradient(135deg, #FF6B6B 0%, #E53935 100%); }
+    .btn-success { background: linear-gradient(135deg, #66BB6A 0%, #43A047 100%); }
+    .btn.small { padding: 8px 14px; font-size: 13px; }
 
-        input[type="text"] {
-            padding: 12px 16px; font-size: 16px;
-            border: 2px solid #4a4a6e; border-radius: 15px;
-            background: rgba(26, 26, 46, 0.8);
-            color: #eee;
-            text-align: center; font-weight: bold;
-            outline: none;
-            font-family: inherit;
-        }
-        input.code-input { text-transform: uppercase; letter-spacing: 4px; width: 150px; }
-        input:focus { border-color: #FF69B4; }
+    input[type="text"] {
+        padding: 12px 16px; font-size: 16px;
+        border: 2px solid #4a4a6e; border-radius: 15px;
+        background: rgba(26, 26, 46, 0.8);
+        color: #eee;
+        text-align: center; font-weight: bold;
+        outline: none;
+        font-family: inherit;
+    }
+    input.code-input { text-transform: uppercase; letter-spacing: 4px; width: 150px; }
+    input:focus { border-color: #FF69B4; }
 
-        /* ===== Код комнаты + кнопка копирования ===== */
-        .code-row {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            margin: 15px auto;
-            padding: 8px 12px;
-            background: rgba(255, 182, 193, 0.06);
-            border-radius: 20px;
-            border: 1px solid rgba(255, 182, 193, 0.15);
-        }
-        .code-box {
-            font-size: 28px; font-weight: bold;
-            background: linear-gradient(135deg, #FFB6C1, #C66BFF);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: 3px;
-        }
-        .copy-btn {
-            padding: 8px 14px;
-            border-radius: 12px;
-            border: none;
-            cursor: pointer;
-            background: linear-gradient(135deg, #FF6B9D, #C66BFF);
-            color: white;
-            font-weight: bold;
-            font-size: 13px;
-            box-shadow: 0 3px 15px rgba(198, 107, 255, 0.4);
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        .copy-btn:hover { transform: scale(1.05); }
-        .copy-btn.copied {
-            background: linear-gradient(135deg, #66BB6A, #43A047);
-        }
+    .code-row {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        margin: 15px auto;
+        padding: 8px 12px;
+        background: rgba(255, 182, 193, 0.06);
+        border-radius: 20px;
+        border: 1px solid rgba(255, 182, 193, 0.15);
+    }
+    .code-box {
+        font-size: 28px; font-weight: bold;
+        background: linear-gradient(135deg, #FFB6C1, #C66BFF);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        letter-spacing: 3px;
+    }
+    .copy-btn {
+        padding: 8px 14px;
+        border-radius: 12px;
+        border: none;
+        cursor: pointer;
+        background: linear-gradient(135deg, #FF6B9D, #C66BFF);
+        color: white;
+        font-weight: bold;
+        font-size: 13px;
+        box-shadow: 0 3px 15px rgba(198, 107, 255, 0.4);
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .copy-btn:hover { transform: scale(1.05); }
+    .copy-btn.copied { background: linear-gradient(135deg, #66BB6A, #43A047); }
 
-        .role-badge {
-            display: inline-block; padding: 6px 18px;
-            background: linear-gradient(135deg, #FF6B9D, #C66BFF);
-            color: white; border-radius: 20px;
-            font-size: 14px; font-weight: bold; margin: 8px 0;
-        }
-        .role-badge.guest { background: linear-gradient(135deg, #FFB74D, #FF7043); }
+    .role-badge {
+        display: inline-block; padding: 6px 18px;
+        background: linear-gradient(135deg, #FF6B9D, #C66BFF);
+        color: white; border-radius: 20px;
+        font-size: 14px; font-weight: bold; margin: 8px 0;
+    }
+    .role-badge.guest { background: linear-gradient(135deg, #FFB74D, #FF7043); }
 
-        .image-select { display: flex; justify-content: center; gap: 12px; margin: 15px 0; flex-wrap: wrap; }
-        .image-select img {
-            width: 160px; height: 160px;
-            object-fit: cover;
-            border: 4px solid transparent;
-            cursor: pointer; border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-            transition: all 0.25s;
-            opacity: 0.85;
-            background: white;
-        }
-        .image-select img:hover { transform: scale(1.06) translateY(-4px); opacity: 1; }
-        .image-select img.proposed {
-            border-color: #FFD700;
-            box-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
-            opacity: 1;
-            animation: pulse 1.2s infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
+    .image-select { display: flex; justify-content: center; gap: 12px; margin: 15px 0; flex-wrap: wrap; }
+    .image-select img {
+        width: 160px; height: 160px;
+        object-fit: cover;
+        border: 4px solid transparent;
+        cursor: pointer; border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        transition: all 0.25s;
+        opacity: 0.85;
+        background: white;
+    }
+    .image-select img:hover { transform: scale(1.06) translateY(-4px); opacity: 1; }
+    .image-select img.proposed {
+        border-color: #FFD700;
+        box-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+        opacity: 1;
+        animation: pulse 1.2s infinite;
+    }
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
 
-        .palette {
-            display: grid;
-            grid-template-columns: repeat(10, 1fr);
-            gap: 6px;
-            margin: 10px auto;
-            padding: 12px;
-            background: rgba(255, 182, 193, 0.06);
-            border-radius: 15px;
-            max-width: 500px;
-            border: 1px solid rgba(255, 182, 193, 0.12);
-        }
-        .color-swatch {
-            width: 100%; aspect-ratio: 1;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 3px solid rgba(255,255,255,0.15);
-            transition: all 0.15s;
-        }
-        .color-swatch:hover { transform: scale(1.15); }
-        .color-swatch.active {
-            border-color: #FFD700;
-            transform: scale(1.2);
-            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.4);
-        }
+    .palette {
+        display: grid;
+        grid-template-columns: repeat(10, 1fr);
+        gap: 6px;
+        margin: 10px auto;
+        padding: 12px;
+        background: rgba(255, 182, 193, 0.06);
+        border-radius: 15px;
+        max-width: 500px;
+        border: 1px solid rgba(255, 182, 193, 0.12);
+    }
+    .color-swatch {
+        width: 100%; aspect-ratio: 1;
+        border-radius: 50%;
+        cursor: pointer;
+        border: 3px solid rgba(255,255,255,0.15);
+        transition: all 0.15s;
+    }
+    .color-swatch:hover { transform: scale(1.15); }
+    .color-swatch.active {
+        border-color: #FFD700;
+        transform: scale(1.2);
+        box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.4);
+    }
 
-        .custom-color-wrap {
-            display: flex; justify-content: center;
-            align-items: center; gap: 10px;
-            margin: 12px auto;
-            color: #E5B8FF;
-            font-size: 14px;
-            font-weight: bold;
-        }
-        input[type="color"] {
-            width: 55px; height: 42px;
-            border: 3px solid #FFB6C1;
-            border-radius: 12px;
-            background: transparent;
-            cursor: pointer;
-            padding: 2px;
-        }
+    .custom-color-wrap {
+        display: flex; justify-content: center;
+        align-items: center; gap: 10px;
+        margin: 12px auto;
+        color: #E5B8FF;
+        font-size: 14px;
+        font-weight: bold;
+        flex-wrap: wrap;
+    }
+    input[type="color"] {
+        width: 55px; height: 42px;
+        border: 3px solid #FFB6C1;
+        border-radius: 12px;
+        background: transparent;
+        cursor: pointer;
+        padding: 2px;
+    }
+    input[type="range"] {
+        width: 160px;
+        accent-color: #C66BFF;
+        cursor: pointer;
+    }
 
-        .tools {
-            display: flex; justify-content: center;
-            gap: 6px; flex-wrap: wrap;
-            margin: 10px 0;
-        }
+    .tools {
+        display: flex; justify-content: center;
+        gap: 6px; flex-wrap: wrap;
+        margin: 10px 0;
+    }
 
-        .players-bar {
-            display: flex; justify-content: space-between;
-            align-items: center; gap: 10px;
-            max-width: 820px; margin: 10px auto;
-        }
-        .player-tag {
-            display: flex; align-items: center; gap: 8px;
-            padding: 8px 16px;
-            background: linear-gradient(135deg, rgba(255, 107, 157, 0.15), rgba(198, 107, 255, 0.15));
-            border-radius: 20px;
-            font-weight: bold;
-            color: #FFB6C1;
-            border: 2px solid rgba(255, 182, 193, 0.25);
-            font-size: 14px;
-            min-width: 120px;
-        }
-        .player-tag.right {
-            background: linear-gradient(135deg, rgba(107, 207, 255, 0.15), rgba(107, 157, 255, 0.15));
-            border-color: rgba(107, 207, 255, 0.25);
-            color: #9DCFFF;
-        }
-        .player-tag .avatar { font-size: 22px; }
-        .player-tag.me { box-shadow: 0 0 0 3px #FFD700; }
+    .players-bar {
+        display: flex; justify-content: space-between;
+        align-items: center; gap: 10px;
+        max-width: 820px; margin: 10px auto;
+    }
+    .player-tag {
+        display: flex; align-items: center; gap: 8px;
+        padding: 8px 16px;
+        background: linear-gradient(135deg, rgba(255, 107, 157, 0.15), rgba(198, 107, 255, 0.15));
+        border-radius: 20px;
+        font-weight: bold;
+        color: #FFB6C1;
+        border: 2px solid rgba(255, 182, 193, 0.25);
+        font-size: 14px;
+        min-width: 120px;
+    }
+    .player-tag.right {
+        background: linear-gradient(135deg, rgba(107, 207, 255, 0.15), rgba(107, 157, 255, 0.15));
+        border-color: rgba(107, 207, 255, 0.25);
+        color: #9DCFFF;
+    }
+    .player-tag .avatar { font-size: 22px; }
+    .player-tag.me { box-shadow: 0 0 0 3px #FFD700; }
 
-        /* ============ ХОЛСТ + ZOOM ============ */
-        .canvas-stage {
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            gap: 10px;
-            max-width: 100%;
-            margin: 0 auto;
-        }
+    .canvas-stage {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        gap: 10px;
+        max-width: 100%;
+        margin: 0 auto;
+    }
 
-        .canvas-viewport {
-            position: relative;
-            width: 800px;
-            height: 800px;
-            max-width: 100%;
-            overflow: auto;
-            border-radius: 22px;
-            background: linear-gradient(135deg, rgba(255, 107, 157, 0.12), rgba(107, 157, 255, 0.12));
-            padding: 10px;
-            box-shadow: 0 0 40px rgba(198, 107, 255, 0.15);
-            touch-action: pan-x pan-y;
-            -webkit-overflow-scrolling: touch;
-            scroll-behavior: smooth;
-        }
-        .canvas-viewport::-webkit-scrollbar {
-            width: 10px;
-            height: 10px;
-        }
-        .canvas-viewport::-webkit-scrollbar-track {
-            background: rgba(255, 182, 193, 0.05);
-            border-radius: 10px;
-        }
-        .canvas-viewport::-webkit-scrollbar-thumb {
-            background: linear-gradient(135deg, #FF6B9D, #C66BFF);
-            border-radius: 10px;
-        }
-        .canvas-viewport::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(135deg, #C66BFF, #FF6B9D);
-        }
+    .canvas-viewport {
+        position: relative;
+        width: 800px;
+        height: 800px;
+        max-width: 100%;
+        overflow: hidden;
+        border-radius: 22px;
+        background: linear-gradient(135deg, rgba(255, 107, 157, 0.12), rgba(107, 157, 255, 0.12));
+        padding: 10px;
+        box-shadow: 0 0 40px rgba(198, 107, 255, 0.15);
+        touch-action: none;
+        -webkit-user-select: none;
+        user-select: none;
+    }
 
-        canvas {
-            display: block;
-            cursor: crosshair;
-            touch-action: none;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-            /* Сглаживание — чтобы линии были мягкими, а не вырвиглазными */
-            image-rendering: auto;
-            transition: width 0.15s ease-out, height 0.15s ease-out;
-        }
+    canvas {
+        display: block;
+        cursor: crosshair;
+        touch-action: none;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        image-rendering: auto;
+    }
+    canvas.panning { cursor: grabbing; }
 
-        .zoom-panel {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            display: flex;
-            gap: 6px;
-            background: rgba(26, 26, 46, 0.95);
-            backdrop-filter: blur(8px);
-            padding: 6px;
-            border-radius: 15px;
-            border: 1px solid rgba(198, 107, 255, 0.3);
-            z-index: 100;
-        }
-        .zoom-btn {
-            width: 38px; height: 38px;
-            border-radius: 10px;
-            border: none;
-            cursor: pointer;
-            background: linear-gradient(135deg, #FF6B9D, #C66BFF);
-            color: white;
-            font-size: 18px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-        }
-        .zoom-btn:hover { transform: scale(1.1); }
-        .zoom-info {
-            color: #E5B8FF;
-            font-size: 13px;
-            font-weight: bold;
-            padding: 0 8px;
-            display: flex;
-            align-items: center;
-            min-width: 50px;
-            justify-content: center;
-        }
+    .zoom-panel {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        display: flex;
+        gap: 6px;
+        background: rgba(26, 26, 46, 0.95);
+        backdrop-filter: blur(8px);
+        padding: 6px;
+        border-radius: 15px;
+        border: 1px solid rgba(198, 107, 255, 0.3);
+        z-index: 100;
+    }
+    .zoom-btn {
+        width: 38px; height: 38px;
+        border-radius: 10px;
+        border: none;
+        cursor: pointer;
+        background: linear-gradient(135deg, #FF6B9D, #C66BFF);
+        color: white;
+        font-size: 18px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+    }
+    .zoom-btn:hover { transform: scale(1.1); }
+    .zoom-info {
+        color: #E5B8FF;
+        font-size: 13px;
+        font-weight: bold;
+        padding: 0 8px;
+        display: flex;
+        align-items: center;
+        min-width: 50px;
+        justify-content: center;
+    }
 
-        .waiting-side {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 20px 25px;
-            min-width: 180px;
-            max-width: 240px;
-            border-radius: 22px;
-            background: linear-gradient(145deg, rgba(42, 42, 68, 0.85), rgba(30, 30, 50, 0.85));
-            border: 2px dashed rgba(198, 107, 255, 0.4);
-            color: #E5B8FF;
-            text-align: center;
-            gap: 14px;
-            flex-shrink: 0;
-            align-self: stretch;
-        }
-        .waiting-side .ws-avatar {
-            font-size: 60px;
-            animation: floaty 3s ease-in-out infinite;
-            filter: drop-shadow(0 0 15px rgba(255, 107, 157, 0.5));
-        }
-        @keyframes floaty {
-            0%, 100% { transform: translateY(0) rotate(-5deg); }
-            50% { transform: translateY(-10px) rotate(5deg); }
-        }
-        .waiting-side .ws-text {
-            font-size: 14px;
-            line-height: 1.4;
-            font-weight: bold;
-            color: #B8B8D1;
-        }
-        .waiting-side .ws-text b { color: #E5B8FF; display: block; margin-bottom: 4px; font-size: 15px; }
-        .waiting-side .ws-dots { display: flex; gap: 6px; }
-        .waiting-side .ws-dot {
-            width: 10px; height: 10px;
-            border-radius: 50%;
-            background: #FF69B4;
-            animation: dotPulse 1.4s ease-in-out infinite;
-        }
-        .waiting-side .ws-dot:nth-child(2) { animation-delay: 0.2s; background: #C66BFF; }
-        .waiting-side .ws-dot:nth-child(3) { animation-delay: 0.4s; background: #9DCFFF; }
-        @keyframes dotPulse {
-            0%, 100% { transform: scale(0.6); opacity: 0.5; }
-            50% { transform: scale(1.3); opacity: 1; }
-        }
+    .waiting-side {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 20px 25px;
+        min-width: 180px;
+        max-width: 240px;
+        border-radius: 22px;
+        background: linear-gradient(145deg, rgba(42, 42, 68, 0.85), rgba(30, 30, 50, 0.85));
+        border: 2px dashed rgba(198, 107, 255, 0.4);
+        color: #E5B8FF;
+        text-align: center;
+        gap: 14px;
+        flex-shrink: 0;
+        align-self: stretch;
+    }
+    .waiting-side .ws-avatar {
+        font-size: 60px;
+        animation: floaty 3s ease-in-out infinite;
+        filter: drop-shadow(0 0 15px rgba(255, 107, 157, 0.5));
+    }
+    @keyframes floaty {
+        0%, 100% { transform: translateY(0) rotate(-5deg); }
+        50% { transform: translateY(-10px) rotate(5deg); }
+    }
+    .waiting-side .ws-text {
+        font-size: 14px;
+        line-height: 1.4;
+        font-weight: bold;
+        color: #B8B8D1;
+    }
+    .waiting-side .ws-text b { color: #E5B8FF; display: block; margin-bottom: 4px; font-size: 15px; }
+    .waiting-side .ws-dots { display: flex; gap: 6px; }
+    .waiting-side .ws-dot {
+        width: 10px; height: 10px;
+        border-radius: 50%;
+        background: #FF69B4;
+        animation: dotPulse 1.4s ease-in-out infinite;
+    }
+    .waiting-side .ws-dot:nth-child(2) { animation-delay: 0.2s; background: #C66BFF; }
+    .waiting-side .ws-dot:nth-child(3) { animation-delay: 0.4s; background: #9DCFFF; }
+    @keyframes dotPulse {
+        0%, 100% { transform: scale(0.6); opacity: 0.5; }
+        50% { transform: scale(1.3); opacity: 1; }
+    }
 
-        @media (max-width: 900px) {
-            .waiting-side { display: none; }
-            .canvas-viewport { width: 100%; height: auto; aspect-ratio: 1; }
-        }
+    @media (max-width: 900px) {
+        .waiting-side { display: none; }
+        .canvas-viewport { width: 100%; height: auto; aspect-ratio: 1; }
+    }
 
-        #status { color: #FF8FAB; font-weight: bold; min-height: 20px; }
-        .tool-info { font-size: 14px; color: #B8B8D1; margin: 8px 0; }
+    #status { color: #FF8FAB; font-weight: bold; min-height: 20px; }
+    .tool-info { font-size: 14px; color: #B8B8D1; margin: 8px 0; }
 
-        .avatar-select {
-            display: flex; justify-content: center;
-            gap: 8px; flex-wrap: wrap;
-            margin: 15px 0;
-        }
-        .avatar-item {
-            font-size: 30px;
-            width: 55px; height: 55px;
-            display: flex; align-items: center; justify-content: center;
-            border-radius: 50%;
-            cursor: pointer;
-            background: rgba(255, 182, 193, 0.06);
-            border: 3px solid transparent;
-            transition: all 0.2s;
-        }
-        .avatar-item:hover { transform: scale(1.15); }
-        .avatar-item.active {
-            border-color: #FF69B4;
-            background: rgba(255, 105, 180, 0.2);
-            box-shadow: 0 0 25px rgba(255, 105, 180, 0.7);
-        }
+    .avatar-select {
+        display: flex; justify-content: center;
+        gap: 8px; flex-wrap: wrap;
+        margin: 15px 0;
+    }
+    .avatar-item {
+        font-size: 30px;
+        width: 55px; height: 55px;
+        display: flex; align-items: center; justify-content: center;
+        border-radius: 50%;
+        cursor: pointer;
+        background: rgba(255, 182, 193, 0.06);
+        border: 3px solid transparent;
+        transition: all 0.2s;
+    }
+    .avatar-item:hover { transform: scale(1.15); }
+    .avatar-item.active {
+        border-color: #FF69B4;
+        background: rgba(255, 105, 180, 0.2);
+        box-shadow: 0 0 25px rgba(255, 105, 180, 0.7);
+    }
 
-        .reactions-panel {
-            display: flex; justify-content: center;
-            gap: 6px; flex-wrap: wrap;
-            margin: 10px auto;
-            padding: 10px;
-            background: rgba(255, 182, 193, 0.06);
-            border-radius: 15px;
-            max-width: 600px;
-            border: 1px solid rgba(255, 182, 193, 0.12);
-        }
-        .reaction-btn {
-            font-size: 26px;
-            width: 44px; height: 44px;
-            display: flex; align-items: center; justify-content: center;
-            background: rgba(255,255,255,0.04);
-            border-radius: 50%;
-            cursor: pointer;
-            border: 2px solid rgba(255, 182, 193, 0.12);
-            transition: all 0.15s;
-        }
-        .reaction-btn:hover {
-            transform: scale(1.25) rotate(-12deg);
-            border-color: #FF69B4;
-        }
+    .reactions-panel {
+        display: flex; justify-content: center;
+        gap: 6px; flex-wrap: wrap;
+        margin: 10px auto;
+        padding: 10px;
+        background: rgba(255, 182, 193, 0.06);
+        border-radius: 15px;
+        max-width: 600px;
+        border: 1px solid rgba(255, 182, 193, 0.12);
+    }
+    .reaction-btn {
+        font-size: 26px;
+        width: 44px; height: 44px;
+        display: flex; align-items: center; justify-content: center;
+        background: rgba(255,255,255,0.04);
+        border-radius: 50%;
+        cursor: pointer;
+        border: 2px solid rgba(255, 182, 193, 0.12);
+        transition: all 0.15s;
+    }
+    .reaction-btn:hover {
+        transform: scale(1.25) rotate(-12deg);
+        border-color: #FF69B4;
+    }
 
-        .comment-bar {
-            display: flex; gap: 8px;
-            max-width: 500px; margin: 12px auto;
-        }
-        .comment-bar input {
-            flex: 1;
-            padding: 10px 14px;
-            border: 2px solid #4a4a6e;
-            border-radius: 20px;
-            font-size: 14px;
-            background: rgba(26, 26, 46, 0.8);
-            color: #eee;
-            text-align: left;
-            font-weight: normal;
-            letter-spacing: normal;
-        }
-        .comment-bar button {
-            padding: 10px 18px;
-            border-radius: 20px;
-            background: linear-gradient(135deg, #FF6B9D, #C66BFF);
-            color: white; border: none;
-            font-weight: bold;
-            cursor: pointer;
-        }
+    .comment-bar {
+        display: flex; gap: 8px;
+        max-width: 500px; margin: 12px auto;
+    }
+    .comment-bar input {
+        flex: 1;
+        padding: 10px 14px;
+        border: 2px solid #4a4a6e;
+        border-radius: 20px;
+        font-size: 14px;
+        background: rgba(26, 26, 46, 0.8);
+        color: #eee;
+        text-align: left;
+        font-weight: normal;
+        letter-spacing: normal;
+    }
+    .comment-bar button {
+        padding: 10px 18px;
+        border-radius: 20px;
+        background: linear-gradient(135deg, #FF6B9D, #C66BFF);
+        color: white; border: none;
+        font-weight: bold;
+        cursor: pointer;
+    }
 
-        #bubbles {
-            position: fixed;
-            top: 20px; right: 20px;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            pointer-events: none;
-            max-width: 300px;
-        }
-        .bubble {
-            background: linear-gradient(145deg, rgba(42, 42, 68, 0.95), rgba(35, 35, 56, 0.95));
-            border-radius: 20px;
-            padding: 10px 18px;
-            box-shadow: 0 4px 25px rgba(198, 107, 255, 0.4);
-            font-size: 16px;
-            animation: bubbleIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            border: 2px solid rgba(255, 182, 193, 0.3);
-            max-width: 280px;
-            word-wrap: break-word;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #eee;
-        }
-        .bubble .bubble-avatar { font-size: 26px; }
-        .bubble .bubble-emoji { font-size: 32px; }
-        .bubble .bubble-text { font-size: 15px; }
+    #bubbles {
+        position: fixed;
+        top: 20px; right: 20px;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        pointer-events: none;
+        max-width: 300px;
+    }
+    .bubble {
+        background: linear-gradient(145deg, rgba(42, 42, 68, 0.95), rgba(35, 35, 56, 0.95));
+        border-radius: 20px;
+        padding: 10px 18px;
+        box-shadow: 0 4px 25px rgba(198, 107, 255, 0.4);
+        font-size: 16px;
+        animation: bubbleIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        border: 2px solid rgba(255, 182, 193, 0.3);
+        max-width: 280px;
+        word-wrap: break-word;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #eee;
+    }
+    .bubble .bubble-avatar { font-size: 26px; }
+    .bubble .bubble-emoji { font-size: 32px; }
+    .bubble .bubble-text { font-size: 15px; }
 
-        @keyframes bubbleIn {
-            0% { opacity: 0; transform: translateX(100px) scale(0.5); }
-            100% { opacity: 1; transform: translateX(0) scale(1); }
-        }
-        @keyframes bubbleOut {
-            0% { opacity: 1; transform: translateX(0) scale(1); }
-            100% { opacity: 0; transform: translateX(100px) scale(0.5); }
-        }
-        .bubble.out { animation: bubbleOut 0.4s ease forwards; }
+    @keyframes bubbleIn {
+        0% { opacity: 0; transform: translateX(100px) scale(0.5); }
+        100% { opacity: 1; transform: translateX(0) scale(1); }
+    }
+    @keyframes bubbleOut {
+        0% { opacity: 1; transform: translateX(0) scale(1); }
+        100% { opacity: 0; transform: translateX(100px) scale(0.5); }
+    }
+    .bubble.out { animation: bubbleOut 0.4s ease forwards; }
 
-        .turn-banner {
-            padding: 12px 20px;
-            margin: 12px auto;
-            max-width: 600px;
-            background: linear-gradient(135deg, rgba(255, 215, 0, 0.12), rgba(255, 105, 180, 0.12));
-            border: 2px solid rgba(255, 215, 0, 0.35);
-            border-radius: 15px;
-            font-weight: bold;
-            color: #FFD700;
-            font-size: 15px;
-        }
+    .turn-banner {
+        padding: 12px 20px;
+        margin: 12px auto;
+        max-width: 600px;
+        background: linear-gradient(135deg, rgba(255, 215, 0, 0.12), rgba(255, 105, 180, 0.12));
+        border: 2px solid rgba(255, 215, 0, 0.35);
+        border-radius: 15px;
+        font-weight: bold;
+        color: #FFD700;
+        font-size: 15px;
+    }
 
-        @media (max-width: 700px) {
-            .container { padding: 12px; border-radius: 20px; }
-            h1 { font-size: 22px; }
-            h2 { font-size: 18px; }
-            .btn { padding: 10px 16px; font-size: 13px; }
-            .image-select img { width: 100px; height: 100px; }
-            .code-box { font-size: 22px; }
-            .copy-btn { padding: 6px 10px; font-size: 12px; }
-            .palette { grid-template-columns: repeat(8, 1fr); }
-            .reaction-btn { width: 38px; height: 38px; font-size: 22px; }
-            .player-tag { font-size: 12px; padding: 6px 10px; min-width: 100px; }
-            .zoom-panel { bottom: 10px; right: 10px; padding: 4px; }
-            .zoom-btn { width: 32px; height: 32px; font-size: 15px; }
-            .zoom-info { font-size: 11px; padding: 0 5px; min-width: 40px; }
-        }
-    </style>
+    @media (max-width: 700px) {
+        .container { padding: 12px; border-radius: 20px; }
+        h1 { font-size: 22px; }
+        h2 { font-size: 18px; }
+        .btn { padding: 10px 16px; font-size: 13px; }
+        .image-select img { width: 100px; height: 100px; }
+        .code-box { font-size: 22px; }
+        .copy-btn { padding: 6px 10px; font-size: 12px; }
+        .palette { grid-template-columns: repeat(8, 1fr); }
+        .reaction-btn { width: 38px; height: 38px; font-size: 22px; }
+        .player-tag { font-size: 12px; padding: 6px 10px; min-width: 100px; }
+        .zoom-panel { bottom: 10px; right: 10px; padding: 4px; }
+        .zoom-btn { width: 32px; height: 32px; font-size: 15px; }
+        .zoom-info { font-size: 11px; padding: 0 5px; min-width: 40px; }
+    }
+</style>
 </head>
 <body>
-    <div class="container">
-        <!-- Экран 1 -->
-        <div id="screen-login">
-            <h1>🎨 Рисуем вместе 🌙</h1>
-            <p class="tool-info">Выберите аватарку, напишите имя и играйте с другом!</p>
+<div class="container">
+    <!-- Экран 1 -->
+    <div id="screen-login">
+        <h1>🎨 Рисуем вместе 🌙</h1>
+        <p class="tool-info">Выберите аватарку, напишите имя и играйте с другом!</p>
 
-            <p style="color:#E5B8FF; font-weight:bold; margin: 10px 0 5px;">👤 Ваша аватарка:</p>
-            <div class="avatar-select" id="avatar-select"></div>
+        <p style="color:#E5B8FF; font-weight:bold; margin: 10px 0 5px;">👤 Ваша аватарка:</p>
+        <div class="avatar-select" id="avatar-select"></div>
 
-            <p style="color:#E5B8FF; font-weight:bold; margin: 10px 0 5px;">✏️ Ваше имя:</p>
-            <input type="text" id="nameInput" placeholder="Как тебя зовут?" maxlength="15" style="width: 220px; letter-spacing: normal; text-transform: none;">
+        <p style="color:#E5B8FF; font-weight:bold; margin: 10px 0 5px;">✏️ Ваше имя:</p>
+        <input type="text" id="nameInput" placeholder="Как тебя зовут?" maxlength="15" style="width: 220px; letter-spacing: normal; text-transform: none;">
 
-            <br><br>
-            <button class="btn" onclick="createRoom()">✨ Создать комнату</button>
-            <br><br>
-<input type="text" id="roomInput" class="code-input" placeholder="КОД" maxlength="4">
-<button class="btn btn-secondary" onclick="pasteCode()" title="Вставить из буфера обмена" style="padding: 10px 16px;">📋 Вставить</button>
-<button class="btn btn-secondary" onclick="joinRoom()">🔗 Присоединиться</button>
-            <p id="status"></p>
+        <br><br>
+        <button class="btn" onclick="createRoom()">✨ Создать комнату</button>
+        <br><br>
+        <input type="text" id="roomInput" class="code-input" placeholder="КОД" maxlength="4">
+        <button class="btn btn-secondary" onclick="pasteCode()" title="Вставить из буфера обмена" style="padding: 10px 16px;">📋 Вставить</button>
+        <button class="btn btn-secondary" onclick="joinRoom()">🔗 Присоединиться</button>
+        <p id="status"></p>
+    </div>
+
+    <!-- Экран 2 -->
+    <div id="screen-select" class="hidden">
+        <h2>🌸 Выберите картинку вместе</h2>
+        <div class="code-row">
+            <span class="code-box" id="code-display">🔑 ----</span>
+            <button class="copy-btn" id="copy-code-btn" onclick="copyCode()">📋 Копировать</button>
+        </div>
+        <p id="role-display"></p>
+
+        <div id="turn-banner" class="turn-banner">Загрузка...</div>
+
+        <div class="image-select" id="image-grid">
+            <img data-index="0" id="img0">
+            <img data-index="1" id="img1">
+            <img data-index="2" id="img2">
         </div>
 
-        <!-- Экран 2 -->
-        <div id="screen-select" class="hidden">
-            <h2>🌸 Выберите картинку вместе</h2>
-            <div class="code-row">
-                <span class="code-box" id="code-display">🔑 ----</span>
-                <button class="copy-btn" id="copy-code-btn" onclick="copyCode()">📋 Копировать</button>
-            </div>
-            <p id="role-display"></p>
-
-            <div id="turn-banner" class="turn-banner">Загрузка...</div>
-
-            <div class="image-select" id="image-grid">
-                <img data-index="0" id="img0">
-                <img data-index="1" id="img1">
-                <img data-index="2" id="img2">
-            </div>
-
-            <div id="proposal-actions" class="hidden">
-                <button class="btn btn-success" onclick="confirmProposal()">✅ Подтвердить</button>
-                <button class="btn btn-danger" onclick="rejectProposal()">❌ Отказаться</button>
-            </div>
-        </div>
-
-        <!-- Экран 3 -->
-        <div id="screen-draw" class="hidden">
-            <h2>🎨 Раскрашиваем!</h2>
-            <p id="draw-info" class="tool-info"></p>
-
-            <div class="players-bar">
-                <div class="player-tag" id="tag-left">
-                    <span class="avatar" id="tag-left-avatar">🐰</span>
-                    <span id="tag-left-name">Игрок 1</span>
-                </div>
-                <div class="player-tag right" id="tag-right">
-                    <span class="avatar" id="tag-right-avatar">🦊</span>
-                    <span id="tag-right-name">Игрок 2</span>
-                </div>
-            </div>
-
-            <div class="tools">
-                <button class="btn btn-warn small" onclick="undo()">↩️ Отменить</button>
-                <button class="btn btn-danger small" onclick="resetMyHalf()">🔄 Сброс</button>
-            </div>
-
-            <div class="palette" id="palette"></div>
-
-            <div class="custom-color-wrap">
-                <label for="customColor">🌈 Свой цвет:</label>
-                <input type="color" id="customColor" value="#FF69B4">
-            </div>
-
-            <div class="canvas-stage">
-                <div class="canvas-viewport" id="canvas-viewport">
-                    <canvas id="canvas" width="1600" height="1600"></canvas>
-                </div>
-                <div class="waiting-side">
-                    <div class="ws-avatar" id="ws-avatar">🦊</div>
-                    <div class="ws-text">
-                        <b id="ws-name">Друг</b>
-                        рисует свою половинку...
-                    </div>
-                    <div class="ws-dots">
-                        <div class="ws-dot"></div>
-                        <div class="ws-dot"></div>
-                        <div class="ws-dot"></div>
-                    </div>
-                </div>
-            </div>
-
-            <p style="color:#E5B8FF; font-weight:bold; margin: 12px 0 5px;">💖 Отправь реакцию другу:</p>
-            <div class="reactions-panel" id="reactions-panel"></div>
-
-            <div class="comment-bar">
-                <input type="text" id="commentInput" placeholder="Напиши что-нибудь милое..." maxlength="80">
-                <button onclick="sendComment()">💌</button>
-            </div>
-
-            <br>
-            <button class="btn" onclick="finish()">✅ Готово!</button>
-        </div>
-
-        <!-- Экран 4 -->
-        <div id="screen-result" class="hidden">
-            <h2>🎉 Ваш шедевр!</h2>
-            <div style="display:inline-block; padding:10px; background: linear-gradient(135deg, rgba(255,107,157,0.12), rgba(107,157,255,0.12)); border-radius: 22px;">
-                <canvas id="finalCanvas" width="1600" height="1600" style="border-radius:12px; background:white; max-width:100%; height:auto; display:block;"></canvas>
-            </div>
-            <br>
-            <button class="btn btn-success" onclick="downloadImage()">📥 Скачать рисунок</button>
-            <button class="btn" onclick="location.reload()">🔄 Ещё раз</button>
+        <div id="proposal-actions" class="hidden">
+            <button class="btn btn-success" onclick="confirmProposal()">✅ Подтвердить</button>
+            <button class="btn btn-danger" onclick="rejectProposal()">❌ Отказаться</button>
         </div>
     </div>
 
-    <div id="bubbles"></div>
+    <!-- Экран 3 -->
+    <div id="screen-draw" class="hidden">
+        <h2>🎨 Раскрашиваем!</h2>
+        <p id="draw-info" class="tool-info"></p>
 
-    <!-- Плавающая панель зума -->
-    <div class="zoom-panel">
-        <button class="zoom-btn" onclick="zoomOut()" title="Отдалить">−</button>
-        <span class="zoom-info" id="zoom-info">100%</span>
-        <button class="zoom-btn" onclick="zoomIn()" title="Приблизить">+</button>
-        <button class="zoom-btn" onclick="zoomReset()" title="Сбросить">⟲</button>
+        <div class="players-bar">
+            <div class="player-tag" id="tag-left">
+                <span class="avatar" id="tag-left-avatar">🐰</span>
+                <span id="tag-left-name">Игрок 1</span>
+            </div>
+            <div class="player-tag right" id="tag-right">
+                <span class="avatar" id="tag-right-avatar">🦊</span>
+                <span id="tag-right-name">Игрок 2</span>
+            </div>
+        </div>
+
+        <div class="tools">
+            <button class="btn btn-warn small" onclick="undo()">↩️ Отменить</button>
+            <button class="btn btn-danger small" onclick="resetCanvas()">🔄 Сброс</button>
+        </div>
+
+        <div class="palette" id="palette"></div>
+
+        <div class="custom-color-wrap">
+            <label for="customColor">🌈 Свой цвет:</label>
+            <input type="color" id="customColor" value="#FF69B4">
+
+            <label for="brushSize" style="margin-left:10px;">🖌️ Размер:</label>
+            <input type="range" id="brushSize" min="2" max="60" value="14" step="1">
+            <span id="brushSizeLabel" style="min-width:32px;">14</span>
+        </div>
+
+        <div class="canvas-stage">
+            <div class="canvas-viewport" id="canvas-viewport">
+                <canvas id="canvas" width="1600" height="1600"></canvas>
+            </div>
+            <div class="waiting-side">
+                <div class="ws-avatar" id="ws-avatar">🦊</div>
+                <div class="ws-text">
+                    <b id="ws-name">Друг</b>
+                    тоже рисует...
+                </div>
+                <div class="ws-dots">
+                    <div class="ws-dot"></div>
+                    <div class="ws-dot"></div>
+                    <div class="ws-dot"></div>
+                </div>
+            </div>
+        </div>
+
+        <p style="color:#E5B8FF; font-weight:bold; margin: 12px 0 5px;">💖 Отправь реакцию другу:</p>
+        <div class="reactions-panel" id="reactions-panel"></div>
+
+        <div class="comment-bar">
+            <input type="text" id="commentInput" placeholder="Напиши что-нибудь милое..." maxlength="80">
+            <button onclick="sendComment()">💌</button>
+        </div>
+
+        <br>
+        <button class="btn" onclick="finish()">✅ Готово!</button>
     </div>
 
-            <script src="/socket.io/socket.io.js"></script>
-    <script>
-        const socket = io();
-        let roomId = null;
-        let playerIndex = -1;
-        let selectedImage = null;
-        let currentColor = '#FF69B4';
-        let myAvatar = '🐰';
-        let myName = 'Игрок';
-        let myRole = null;
+    <!-- Экран 4 -->
+    <div id="screen-result" class="hidden">
+        <h2>🎉 Ваш шедевр!</h2>
+        <div style="display:inline-block; padding:10px; background: linear-gradient(135deg, rgba(255,107,157,0.12), rgba(107,157,255,0.12)); border-radius: 22px;">
+            <canvas id="finalCanvas" width="1600" height="1600" style="border-radius:12px; background:white; max-width:100%; height:auto; display:block;"></canvas>
+        </div>
+        <br>
+        <button class="btn btn-success" onclick="downloadImage()">📥 Скачать рисунок</button>
+        <button class="btn" onclick="location.reload()">🔄 Ещё раз</button>
+    </div>
+</div>
 
-        const CANVAS_SIZE = 1600;
-        const HALF = CANVAS_SIZE / 2;
-        // Размер, в который сжимаем при отправке
-        const SEND_SIZE = 1200;
+<div id="bubbles"></div>
 
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d', { willReadFrequently: true });
-        let history = [];
-        const MAX_HISTORY = 20;
+<!-- Плавающая панель зума -->
+<div class="zoom-panel">
+    <button class="zoom-btn" onclick="zoomOut()" title="Отдалить">−</button>
+    <span class="zoom-info" id="zoom-info">100%</span>
+    <button class="zoom-btn" onclick="zoomIn()" title="Приблизить">+</button>
+    <button class="zoom-btn" onclick="zoomReset()" title="Сбросить">⟲</button>
+</div>
 
-        const COLORS = [
-            '#FF69B4','#FF1493','#FFB6C1','#FFC0CB','#FF8FAB',
-            '#FFD700','#FFA500','#FF8C00','#FF6347','#FF4500',
-            '#FF0000','#DC143C','#B22222','#8B0000','#8B4513',
-            '#D2691E','#F4A460','#DEB887','#F5DEB3','#FFFFE0',
-            '#FFFACD','#ADFF2F','#98FB98','#32CD32','#00FF00',
-            '#008000','#006400','#2E8B57','#00CED1','#40E0D0',
-            '#00BFFF','#1E90FF','#0000FF','#00008B','#4B0082',
-            '#800080','#9400D3','#8B008B','#000000','#808080'
-        ];
-        const AVATARS = ['🐰','🐱','🐻','🐼','🦊','🐸','🐨','🦄','🐧','🐢'];
-        const REACTIONS = ['❤️','😂','😍','👍','🔥','🥰','✨','😭','🎉','💖'];
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io();
+    let roomId = null;
+    let playerIndex = -1;
+    let selectedImage = null;
+    let currentColor = '#FF69B4';
+    let myAvatar = '🐰';
+    let myName = 'Игрок';
+    let myRole = null;
 
-        const IMAGE_EXT = ['svg', 'png'];
+    const CANVAS_SIZE = 1600;
+    const SEND_SIZE = 1200;
 
-        // ============ Копирование / вставка кода ============
-        function copyCode() {
-            const codeText = (document.getElementById('code-display').textContent || '').replace('🔑 Код: ', '').trim();
-            if (!codeText || codeText === '----') return;
-            const done = () => {
-                const btn = document.getElementById('copy-code-btn');
-                btn.classList.add('copied');
-                btn.innerHTML = '✅ Скопировано!';
-                setTimeout(() => {
-                    btn.classList.remove('copied');
-                    btn.innerHTML = '📋 Копировать';
-                }, 1800);
-            };
-            navigator.clipboard.writeText(codeText).then(done).catch(() => {
-                const ta = document.createElement('textarea');
-                ta.value = codeText;
-                document.body.appendChild(ta);
-                ta.select();
-                document.execCommand('copy');
-                document.body.removeChild(ta);
-                done();
-            });
-        }
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    let history = [];
+    const MAX_HISTORY = 20;
 
-        // Вставка кода из буфера
-        async function pasteCode() {
-            const input = document.getElementById('roomInput');
-            try {
-                let text = '';
-                if (navigator.clipboard && navigator.clipboard.readText) {
-                    text = await navigator.clipboard.readText();
-                } else {
-                    // fallback для старых браузеров
-                    const ta = document.createElement('textarea');
-                    ta.style.position = 'fixed';
-                    ta.style.left = '-9999px';
-                    document.body.appendChild(ta);
-                    ta.focus();
-                    document.execCommand('paste');
-                    text = ta.value;
-                    document.body.removeChild(ta);
-                }
-                text = (text || '').trim().toUpperCase();
-                // Оставляем только буквы и цифры (4 символа)
-                const match = text.match(/[A-Z0-9]{4}/);
-                if (match) {
-                    input.value = match[0];
-                    input.style.borderColor = '#66BB6A';
-                    setTimeout(() => { input.style.borderColor = ''; }, 1200);
-                } else {
-                    input.style.borderColor = '#FF6B6B';
-                    setTimeout(() => { input.style.borderColor = ''; }, 1200);
-                    document.getElementById('status').innerText = 'В буфере нет кода из 4 символов';
-                }
-            } catch (err) {
-                document.getElementById('status').innerText = 'Не удалось прочитать буфер. Вставь вручную (Ctrl+V).';
-            }
-        }
+    // Маска «можно рисовать» — Uint8Array размером CANVAS_SIZE*CANVAS_SIZE
+    // 1 = можно рисовать (не чёрный пиксель), 0 = нельзя (чёрный контур или фон)
+    let paintMask = null;
 
-        function buildAvatars() {
-            const p = document.getElementById('avatar-select');
-            p.innerHTML = '';
-            AVATARS.forEach(a => {
-                const el = document.createElement('div');
-                el.className = 'avatar-item' + (a === myAvatar ? ' active' : '');
-                el.textContent = a;
-                el.onclick = () => {
-                    myAvatar = a;
-                    document.querySelectorAll('.avatar-item').forEach(x => x.classList.remove('active'));
-                    el.classList.add('active');
-                };
-                p.appendChild(el);
-            });
-        }
-        buildAvatars();
+    // Ограничение: рисовать можно только если пиксель исходной картинки НЕ тёмный
+    const DARK_THRESHOLD = 90; // 0-255, чем ниже — тем строже контур
 
-        function loadPicture(num) {
-            return new Promise((resolve, reject) => {
-                let attempt = 0;
-                function tryLoad() {
-                    if (attempt >= IMAGE_EXT.length) return reject(new Error('Не найдено'));
-                    const src = 'pic' + num + '.' + IMAGE_EXT[attempt];
-                    const img = new Image();
-                    img.crossOrigin = 'anonymous';
-                    img.onload = () => resolve(img);
-                    img.onerror = () => { attempt++; tryLoad(); };
-                    img.src = src;
-                }
-                tryLoad();
-            });
-        }
+    let currentBrushSize = 14;
+    let isDrawing = false;
+    let lastX = 0, lastY = 0;
 
-        function loadPreviews() {
-            [1, 2, 3].forEach(num => {
-                loadPicture(num).then(img => {
-                    const el = document.getElementById('img' + (num - 1));
-                    el.src = img.src;
-                }).catch(() => {
-                    document.getElementById('img' + (num - 1)).style.background = '#333';
-                });
-            });
-        }
-        loadPreviews();
+    const COLORS = [
+        '#FF69B4','#FF1493','#FFB6C1','#FFC0CB','#FF8FAB',
+        '#FFD700','#FFA500','#FF8C00','#FF6347','#FF4500',
+        '#FF0000','#DC143C','#B22222','#8B0000','#8B4513',
+        '#D2691E','#F4A460','#DEB887','#F5DEB3','#FFFFE0',
+        '#FFFACD','#ADFF2F','#98FB98','#32CD32','#00FF00',
+        '#008000','#006400','#2E8B57','#00CED1','#40E0D0',
+        '#00BFFF','#1E90FF','#0000FF','#00008B','#4B0082',
+        '#800080','#9400D3','#8B008B','#000000','#808080'
+    ];
+    const AVATARS = ['🐰','🐱','🐻','🐼','🦊','🐸','🐨','🦄','🐧','🐢'];
+    const REACTIONS = ['❤️','😂','😍','👍','🔥','🥰','✨','😭','🎉','💖'];
 
-        function buildReactions() {
-            const p = document.getElementById('reactions-panel');
-            p.innerHTML = '';
-            REACTIONS.forEach(r => {
-                const el = document.createElement('div');
-                el.className = 'reaction-btn';
-                el.textContent = r;
-                el.onclick = () => {
-                    showBubble({ emoji: r, avatar: myAvatar });
-                    socket.emit('reaction', { roomId, emoji: r, avatar: myAvatar, name: myName });
-                };
-                p.appendChild(el);
-            });
-        }
+    const IMAGE_EXT = ['svg', 'png'];
 
-        function showBubble({ emoji, text, avatar }) {
-            const bubbles = document.getElementById('bubbles');
-            const b = document.createElement('div');
-            b.className = 'bubble';
-            if (emoji && !text) {
-                b.innerHTML = `<span class="bubble-avatar">${avatar}</span><span class="bubble-emoji">${emoji}</span>`;
-            } else if (text && !emoji) {
-                b.innerHTML = `<span class="bubble-avatar">${avatar}</span><span class="bubble-text">${text}</span>`;
-            } else {
-                b.innerHTML = `<span class="bubble-avatar">${avatar}</span><span class="bubble-text">${emoji || ''} ${text || ''}</span>`;
-            }
-            bubbles.appendChild(b);
+    // ============ Копирование / вставка кода ============
+    function copyCode() {
+        const codeText = (document.getElementById('code-display').textContent || '').replace('🔑 Код: ', '').replace('🔑 ', '').trim();
+        if (!codeText || codeText === '----') return;
+        const done = () => {
+            const btn = document.getElementById('copy-code-btn');
+            btn.classList.add('copied');
+            btn.innerHTML = '✅ Скопировано!';
             setTimeout(() => {
-                b.classList.add('out');
-                setTimeout(() => b.remove(), 400);
-            }, 3500);
-        }
-
-        socket.on('showReaction', ({ emoji, avatar }) => showBubble({ emoji, avatar }));
-        socket.on('showComment', ({ text, avatar }) => showBubble({ text, avatar }));
-
-        function sendComment() {
-            const input = document.getElementById('commentInput');
-            const text = input.value.trim();
-            if (!text) return;
-            showBubble({ text, avatar: myAvatar });
-            socket.emit('comment', { roomId, text, avatar: myAvatar, name: myName });
-            input.value = '';
-        }
-        document.getElementById('commentInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendComment();
+                btn.classList.remove('copied');
+                btn.innerHTML = '📋 Копировать';
+            }, 1800);
+        };
+        navigator.clipboard.writeText(codeText).then(done).catch(() => {
+            const ta = document.createElement('textarea');
+            ta.value = codeText;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            done();
         });
+    }
 
-        function buildPalette() {
-            const p = document.getElementById('palette');
-            p.innerHTML = '';
-            COLORS.forEach(c => {
-                const s = document.createElement('div');
-                s.className = 'color-swatch' + (c === currentColor ? ' active' : '');
-                s.style.background = c;
-                s.onclick = () => {
-                    currentColor = c;
-                    document.querySelectorAll('.color-swatch').forEach(el => el.classList.remove('active'));
-                    s.classList.add('active');
-                };
-                p.appendChild(s);
+    async function pasteCode() {
+        const input = document.getElementById('roomInput');
+        try {
+            let text = '';
+            if (navigator.clipboard && navigator.clipboard.readText) {
+                text = await navigator.clipboard.readText();
+            } else {
+                const ta = document.createElement('textarea');
+                ta.style.position = 'fixed';
+                ta.style.left = '-9999px';
+                document.body.appendChild(ta);
+                ta.focus();
+                document.execCommand('paste');
+                text = ta.value;
+                document.body.removeChild(ta);
+            }
+            text = (text || '').trim().toUpperCase();
+            const match = text.match(/[A-Z0-9]{4}/);
+            if (match) {
+                input.value = match[0];
+                input.style.borderColor = '#66BB6A';
+                setTimeout(() => { input.style.borderColor = ''; }, 1200);
+            } else {
+                input.style.borderColor = '#FF6B6B';
+                setTimeout(() => { input.style.borderColor = ''; }, 1200);
+                document.getElementById('status').innerText = 'В буфере нет кода из 4 символов';
+            }
+        } catch (err) {
+            document.getElementById('status').innerText = 'Не удалось прочитать буфер. Вставь вручную (Ctrl+V).';
+        }
+    }
+
+    function buildAvatars() {
+        const p = document.getElementById('avatar-select');
+        p.innerHTML = '';
+        AVATARS.forEach(a => {
+            const el = document.createElement('div');
+            el.className = 'avatar-item' + (a === myAvatar ? ' active' : '');
+            el.textContent = a;
+            el.onclick = () => {
+                myAvatar = a;
+                document.querySelectorAll('.avatar-item').forEach(x => x.classList.remove('active'));
+                el.classList.add('active');
+            };
+            p.appendChild(el);
+        });
+    }
+    buildAvatars();
+
+    function loadPicture(num) {
+        return new Promise((resolve, reject) => {
+            let attempt = 0;
+            function tryLoad() {
+                if (attempt >= IMAGE_EXT.length) return reject(new Error('Не найдено'));
+                const src = 'pic' + num + '.' + IMAGE_EXT[attempt];
+                const img = new Image();
+                img.crossOrigin = 'anonymous';
+                img.onload = () => resolve(img);
+                img.onerror = () => { attempt++; tryLoad(); };
+                img.src = src;
+            }
+            tryLoad();
+        });
+    }
+
+    function loadPreviews() {
+        [1, 2, 3].forEach(num => {
+            loadPicture(num).then(img => {
+                const el = document.getElementById('img' + (num - 1));
+                el.src = img.src;
+            }).catch(() => {
+                document.getElementById('img' + (num - 1)).style.background = '#333';
             });
-        }
-
-        document.getElementById('customColor').addEventListener('input', (e) => {
-            currentColor = e.target.value;
-            document.querySelectorAll('.color-swatch').forEach(el => el.classList.remove('active'));
         });
+    }
+    loadPreviews();
 
-        function createRoom() {
-            const nameVal = document.getElementById('nameInput').value.trim();
-            if (nameVal) myName = nameVal;
-            document.getElementById('status').innerText = 'Создаём...';
-            socket.emit('createRoom', { avatar: myAvatar, name: myName });
-        }
-
-        socket.on('roomCreated', (id) => {
-            roomId = id;
-            myRole = 'host';
-            document.getElementById('status').innerText = '';
-            alert('🎉 Комната создана!\n\nКод: ' + id + '\n\nПередайте его другу.');
-            document.getElementById('screen-login').classList.add('hidden');
-            document.getElementById('screen-select').classList.remove('hidden');
-            document.getElementById('code-display').textContent = '🔑 Код: ' + id;
-            document.getElementById('role-display').innerHTML = `<span class="role-badge">${myAvatar} ${myName} — ИГРОК 1</span>`;
-            document.getElementById('turn-banner').innerHTML = '🎯 <b>Кликните картинку</b>, чтобы предложить её другу.';
+    function buildReactions() {
+        const p = document.getElementById('reactions-panel');
+        p.innerHTML = '';
+        REACTIONS.forEach(r => {
+            const el = document.createElement('div');
+            el.className = 'reaction-btn';
+            el.textContent = r;
+            el.onclick = () => {
+                showBubble({ emoji: r, avatar: myAvatar });
+                socket.emit('reaction', { roomId, emoji: r, avatar: myAvatar, name: myName });
+            };
+            p.appendChild(el);
         });
+    }
 
-        function joinRoom() {
-            const id = document.getElementById('roomInput').value.toUpperCase().trim();
-            if (id.length !== 4) {
-                document.getElementById('status').innerText = 'Нужен код из 4 символов!';
-                return;
-            }
-            const nameVal = document.getElementById('nameInput').value.trim();
-            if (nameVal) myName = nameVal;
-            socket.emit('joinRoom', { roomId: id, avatar: myAvatar, name: myName });
+    function showBubble({ emoji, text, avatar }) {
+        const bubbles = document.getElementById('bubbles');
+        const b = document.createElement('div');
+        b.className = 'bubble';
+        if (emoji && !text) {
+            b.innerHTML = `<span class="bubble-avatar">${avatar}</span><span class="bubble-emoji">${emoji}</span>`;
+        } else if (text && !emoji) {
+            b.innerHTML = `<span class="bubble-avatar">${avatar}</span><span class="bubble-text">${text}</span>`;
+        } else {
+            b.innerHTML = `<span class="bubble-avatar">${avatar}</span><span class="bubble-text">${emoji || ''} ${text || ''}</span>`;
         }
+        bubbles.appendChild(b);
+        setTimeout(() => {
+            b.classList.add('out');
+            setTimeout(() => b.remove(), 400);
+        }, 3500);
+    }
 
-        socket.on('youAre', ({ role, roomId: rid, myAvatar: ma, myName: mn, partnerAvatar, partnerName }) => {
-            roomId = rid;
-            myAvatar = ma;
-            myName = mn;
-            myRole = role;
-            if (role === 'host') {
-                playerIndex = 0;
-                document.getElementById('tag-left-avatar').textContent = ma;
-                document.getElementById('tag-left-name').textContent = mn + ' (вы)';
-                document.getElementById('tag-right-avatar').textContent = partnerAvatar;
-                document.getElementById('tag-right-name').textContent = partnerName;
-                document.getElementById('tag-left').classList.add('me');
-                document.getElementById('ws-avatar').textContent = partnerAvatar;
-                document.getElementById('ws-name').textContent = partnerName;
-                return;
-            }
-            playerIndex = 1;
-            document.getElementById('screen-login').classList.add('hidden');
-            document.getElementById('screen-select').classList.remove('hidden');
-            document.getElementById('code-display').textContent = '🔑 Код: ' + rid;
-            document.getElementById('role-display').innerHTML = `<span class="role-badge guest">${myAvatar} ${myName} — ИГРОК 2</span>`;
-            document.getElementById('tag-left-avatar').textContent = partnerAvatar;
-            document.getElementById('tag-left-name').textContent = partnerName;
-            document.getElementById('tag-right-avatar').textContent = ma;
-            document.getElementById('tag-right-name').textContent = mn + ' (вы)';
-            document.getElementById('tag-right').classList.add('me');
-            document.getElementById('turn-banner').innerHTML = '🎯 <b>Кликните картинку</b>, чтобы предложить её другу.';
+    socket.on('showReaction', ({ emoji, avatar }) => showBubble({ emoji, avatar }));
+    socket.on('showComment', ({ text, avatar }) => showBubble({ text, avatar }));
+
+    function sendComment() {
+        const input = document.getElementById('commentInput');
+        const text = input.value.trim();
+        if (!text) return;
+        showBubble({ text, avatar: myAvatar });
+        socket.emit('comment', { roomId, text, avatar: myAvatar, name: myName });
+        input.value = '';
+    }
+    document.getElementById('commentInput').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendComment();
+    });
+
+    function buildPalette() {
+        const p = document.getElementById('palette');
+        p.innerHTML = '';
+        COLORS.forEach(c => {
+            const s = document.createElement('div');
+            s.className = 'color-swatch' + (c === currentColor ? ' active' : '');
+            s.style.background = c;
+            s.onclick = () => {
+                currentColor = c;
+                document.querySelectorAll('.color-swatch').forEach(el => el.classList.remove('active'));
+                s.classList.add('active');
+            };
+            p.appendChild(s);
+        });
+    }
+
+    document.getElementById('customColor').addEventListener('input', (e) => {
+        currentColor = e.target.value;
+        document.querySelectorAll('.color-swatch').forEach(el => el.classList.remove('active'));
+    });
+
+    const brushSlider = document.getElementById('brushSize');
+    const brushLabel = document.getElementById('brushSizeLabel');
+    brushSlider.addEventListener('input', (e) => {
+        currentBrushSize = parseInt(e.target.value);
+        brushLabel.textContent = currentBrushSize;
+    });
+
+    function createRoom() {
+        const nameVal = document.getElementById('nameInput').value.trim();
+        if (nameVal) myName = nameVal;
+        document.getElementById('status').innerText = 'Создаём...';
+        socket.emit('createRoom', { avatar: myAvatar, name: myName });
+    }
+
+    socket.on('roomCreated', (id) => {
+        roomId = id;
+        myRole = 'host';
+        document.getElementById('status').innerText = '';
+        alert('🎉 Комната создана!\n\nКод: ' + id + '\n\nПередайте его другу.');
+        document.getElementById('screen-login').classList.add('hidden');
+        document.getElementById('screen-select').classList.remove('hidden');
+        document.getElementById('code-display').textContent = '🔑 Код: ' + id;
+        document.getElementById('role-display').innerHTML = `<span class="role-badge">${myAvatar} ${myName} — ИГРОК 1</span>`;
+        document.getElementById('turn-banner').innerHTML = '🎯 <b>Кликните картинку</b>, чтобы предложить её другу.';
+    });
+
+    function joinRoom() {
+        const id = document.getElementById('roomInput').value.toUpperCase().trim();
+        if (id.length !== 4) {
+            document.getElementById('status').innerText = 'Нужен код из 4 символов!';
+            return;
+        }
+        const nameVal = document.getElementById('nameInput').value.trim();
+        if (nameVal) myName = nameVal;
+        socket.emit('joinRoom', { roomId: id, avatar: myAvatar, name: myName });
+    }
+
+    socket.on('youAre', ({ role, roomId: rid, myAvatar: ma, myName: mn, partnerAvatar, partnerName }) => {
+        roomId = rid;
+        myAvatar = ma;
+        myName = mn;
+        myRole = role;
+        if (role === 'host') {
+            playerIndex = 0;
+            document.getElementById('tag-left-avatar').textContent = ma;
+            document.getElementById('tag-left-name').textContent = mn + ' (вы)';
+            document.getElementById('tag-right-avatar').textContent = partnerAvatar;
+            document.getElementById('tag-right-name').textContent = partnerName;
+            document.getElementById('tag-left').classList.add('me');
             document.getElementById('ws-avatar').textContent = partnerAvatar;
             document.getElementById('ws-name').textContent = partnerName;
-        });
+            return;
+        }
+        playerIndex = 1;
+        document.getElementById('screen-login').classList.add('hidden');
+        document.getElementById('screen-select').classList.remove('hidden');
+        document.getElementById('code-display').textContent = '🔑 Код: ' + rid;
+        document.getElementById('role-display').innerHTML = `<span class="role-badge guest">${myAvatar} ${myName} — ИГРОК 2</span>`;
+        document.getElementById('tag-left-avatar').textContent = partnerAvatar;
+        document.getElementById('tag-left-name').textContent = partnerName;
+        document.getElementById('tag-right-avatar').textContent = ma;
+        document.getElementById('tag-right-name').textContent = mn + ' (вы)';
+        document.getElementById('tag-right').classList.add('me');
+        document.getElementById('turn-banner').innerHTML = '🎯 <b>Кликните картинку</b>, чтобы предложить её другу.';
+        document.getElementById('ws-avatar').textContent = partnerAvatar;
+        document.getElementById('ws-name').textContent = partnerName;
+    });
 
-        socket.on('error', (m) => document.getElementById('status').innerText = '❌ ' + m);
-        socket.on('partnerLeft', () => { alert('Друг вышел!'); location.reload(); });
+    socket.on('error', (m) => document.getElementById('status').innerText = '❌ ' + m);
+    socket.on('partnerLeft', () => { alert('Друг вышел!'); location.reload(); });
 
+    document.querySelectorAll('.image-select img').forEach(img => {
+        img.onclick = () => {
+            const idx = parseInt(img.dataset.index);
+            socket.emit('proposeImage', { roomId, imageIndex: idx, by: myRole });
+        };
+    });
+
+    socket.on('imageProposed', ({ by, imageIndex }) => {
         document.querySelectorAll('.image-select img').forEach(img => {
-            img.onclick = () => {
-                const idx = parseInt(img.dataset.index);
-                socket.emit('proposeImage', { roomId, imageIndex: idx, by: myRole });
-            };
+            const idx = parseInt(img.dataset.index);
+            img.classList.remove('proposed');
+            if (idx === imageIndex) img.classList.add('proposed');
         });
 
-        socket.on('imageProposed', ({ by, imageIndex }) => {
-            document.querySelectorAll('.image-select img').forEach(img => {
-                const idx = parseInt(img.dataset.index);
-                img.classList.remove('proposed');
-                if (idx === imageIndex) img.classList.add('proposed');
-            });
-
-            if (by === myRole) {
-                document.getElementById('turn-banner').innerHTML = `⏳ Вы предложили картинку №${imageIndex + 1}. Ждём ответа друга...`;
-                document.getElementById('proposal-actions').classList.add('hidden');
-            } else {
-                document.getElementById('turn-banner').innerHTML = `💫 Друг предложил картинку №${imageIndex + 1}. Подтвердите или предложите свою!`;
-                document.getElementById('proposal-actions').classList.remove('hidden');
-            }
-        });
-
-        function confirmProposal() {
-            const proposedImg = document.querySelector('.image-select img.proposed');
-            if (!proposedImg) return;
-            const idx = parseInt(proposedImg.dataset.index);
-            socket.emit('acceptImage', { roomId, imageIndex: idx });
-        }
-
-        function rejectProposal() {
+        if (by === myRole) {
+            document.getElementById('turn-banner').innerHTML = `⏳ Вы предложили картинку №${imageIndex + 1}. Ждём ответа друга...`;
             document.getElementById('proposal-actions').classList.add('hidden');
-            document.getElementById('turn-banner').innerHTML = '🎯 <b>Кликните свою картинку</b>, чтобы предложить её другу.';
-            document.querySelectorAll('.image-select img.proposed').forEach(x => x.classList.remove('proposed'));
+        } else {
+            document.getElementById('turn-banner').innerHTML = `💫 Друг предложил картинку №${imageIndex + 1}. Подтвердите или предложите свою!`;
+            document.getElementById('proposal-actions').classList.remove('hidden');
         }
+    });
 
-        function drawPictureOnCanvas(img) {
-            ctx.fillStyle = 'white';
-            ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-            ctx.imageSmoothingEnabled = true;
-            ctx.imageSmoothingQuality = 'high';
-            ctx.drawImage(img, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
-        }
+    function confirmProposal() {
+        const proposedImg = document.querySelector('.image-select img.proposed');
+        if (!proposedImg) return;
+        const idx = parseInt(proposedImg.dataset.index);
+        socket.emit('acceptImage', { roomId, imageIndex: idx });
+    }
 
-        socket.on('startDrawing', ({ imageIndex, playerIndex: pIdx }) => {
-            playerIndex = pIdx;
-            selectedImage = imageIndex;
-            document.getElementById('screen-select').classList.add('hidden');
-            document.getElementById('screen-draw').classList.remove('hidden');
-            document.getElementById('draw-info').innerHTML = playerIndex === 0
-                ? '🖌️ Ваша часть: <b>левая</b>. Тапните по области, чтобы залить.'
-                : '🖌️ Ваша часть: <b>правая</b>. Тапните по области, чтобы залить.';
+    function rejectProposal() {
+        document.getElementById('proposal-actions').classList.add('hidden');
+        document.getElementById('turn-banner').innerHTML = '🎯 <b>Кликните свою картинку</b>, чтобы предложить её другу.';
+        document.querySelectorAll('.image-select img.proposed').forEach(x => x.classList.remove('proposed'));
+    }
 
-            buildPalette();
-            buildReactions();
+    // ================== МАСКА ==================
+    // Строим маску по исходной картинке: где пиксель тёмный — рисовать нельзя
+    function buildMaskFromImage(img) {
+        const tmp = document.createElement('canvas');
+        tmp.width = CANVAS_SIZE;
+        tmp.height = CANVAS_SIZE;
+        const tctx = tmp.getContext('2d', { willReadFrequently: true });
+        tctx.imageSmoothingEnabled = true;
+        tctx.imageSmoothingQuality = 'high';
+        tctx.drawImage(img, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
 
-            loadPicture(imageIndex + 1).then(img => {
-                drawPictureOnCanvas(img);
-                ctx.fillStyle = '#1a1a2e';
-                if (playerIndex === 0) {
-                    ctx.fillRect(HALF, 0, HALF, CANVAS_SIZE);
-                } else {
-                    ctx.fillRect(0, 0, HALF, CANVAS_SIZE);
-                }
-                saveHistory();
-                panX = 0; panY = 0;
-                zoomLevel = 1;
-                applyTransform();
-            });
-        });
+        const src = tctx.getImageData(0, 0, CANVAS_SIZE, CANVAS_SIZE).data;
+        paintMask = new Uint8Array(CANVAS_SIZE * CANVAS_SIZE);
 
-        function saveHistory() {
-            history.push(ctx.getImageData(0, 0, CANVAS_SIZE, CANVAS_SIZE));
-            if (history.length > MAX_HISTORY) history.shift();
-        }
-
-        function undo() {
-            if (history.length < 2) return;
-            history.pop();
-            const prev = history[history.length - 1];
-            ctx.putImageData(prev, 0, 0);
-            socket.emit('undoData', { roomId, playerIndex });
-        }
-
-        socket.on('applyUndo', () => {
-            if (history.length < 2) return;
-            history.pop();
-            const prev = history[history.length - 1];
-            ctx.putImageData(prev, 0, 0);
-        });
-
-        function resetMyHalf() {
-            if (!confirm('Очистить свою половину?')) return;
-            const halfStart = playerIndex === 0 ? 0 : HALF;
-            const halfW = HALF;
-            ctx.fillStyle = '#1a1a2e';
-            if (playerIndex === 0) ctx.fillRect(0, 0, HALF, CANVAS_SIZE);
-            else ctx.fillRect(HALF, 0, HALF, CANVAS_SIZE);
-
-            loadPicture(selectedImage + 1).then(img => {
-                const temp = document.createElement('canvas');
-                temp.width = CANVAS_SIZE; temp.height = CANVAS_SIZE;
-                const tctx = temp.getContext('2d');
-                tctx.imageSmoothingEnabled = true;
-                tctx.imageSmoothingQuality = 'high';
-                tctx.drawImage(img, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
-
-                const imgData = tctx.getImageData(halfStart, 0, halfW, CANVAS_SIZE);
-                for (let y = 0; y < CANVAS_SIZE; y++) {
-                    for (let x = 0; x < halfW; x++) {
-                        const pos = (y * halfW + x) * 4;
-                        if (imgData.data[pos] < 150) {
-                            ctx.fillStyle = '#000';
-                            ctx.fillRect(halfStart + x, y, 1, 1);
-                        }
-                    }
-                }
-                saveHistory();
-                socket.emit('resetData', { roomId, playerIndex });
-            });
-        }
-
-        socket.on('applyReset', () => {
-            const halfStart = playerIndex === 0 ? 0 : HALF;
-            const halfW = HALF;
-            ctx.fillStyle = '#1a1a2e';
-            if (playerIndex === 0) ctx.fillRect(0, 0, HALF, CANVAS_SIZE);
-            else ctx.fillRect(HALF, 0, HALF, CANVAS_SIZE);
-            loadPicture(selectedImage + 1).then(img => {
-                const temp = document.createElement('canvas');
-                temp.width = CANVAS_SIZE; temp.height = CANVAS_SIZE;
-                const tctx = temp.getContext('2d');
-                tctx.imageSmoothingEnabled = true;
-                tctx.imageSmoothingQuality = 'high';
-                tctx.drawImage(img, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
-
-                const imgData = tctx.getImageData(halfStart, 0, halfW, CANVAS_SIZE);
-                for (let y = 0; y < CANVAS_SIZE; y++) {
-                    for (let x = 0; x < halfW; x++) {
-                        const pos = (y * halfW + x) * 4;
-                        if (imgData.data[pos] < 150) {
-                            ctx.fillStyle = '#000';
-                            ctx.fillRect(halfStart + x, y, 1, 1);
-                        }
-                    }
-                }
-                saveHistory();
-            });
-        });
-
-        // ================== ЗАЛИВКА ==================
-        function floodFill(startX, startY, fillColor) {
-            if (playerIndex === 0 && startX >= HALF) return null;
-            if (playerIndex === 1 && startX < HALF) return null;
-
-            const w = CANVAS_SIZE, h = CANVAS_SIZE;
-            const imgData = ctx.getImageData(0, 0, w, h);
-            const data = imgData.data;
-            const startPos = (startY * w + startX) * 4;
-            const startR = data[startPos];
-            const startG = data[startPos + 1];
-            const startB = data[startPos + 2];
-
-            if (startR < 70 && startG < 70 && startB < 70) return null;
-
-            const tmp = document.createElement('canvas');
-            tmp.width = tmp.height = 1;
-            const tctx = tmp.getContext('2d');
-            tctx.fillStyle = fillColor;
-            tctx.fillRect(0, 0, 1, 1);
-            const fc = tctx.getImageData(0, 0, 1, 1).data;
-            const fillR = fc[0], fillG = fc[1], fillB = fc[2];
-
-            if (Math.abs(startR - fillR) < 8 && Math.abs(startG - fillG) < 8 && Math.abs(startB - fillB) < 8) return null;
-
-            const tolerance = 100;
-            const visited = new Uint8Array(w * h);
-            const filledList = [];
-
-            function match(pos) {
-                return Math.abs(data[pos] - startR) < tolerance &&
-                       Math.abs(data[pos+1] - startG) < tolerance &&
-                       Math.abs(data[pos+2] - startB) < tolerance;
+        for (let i = 0; i < CANVAS_SIZE * CANVAS_SIZE; i++) {
+            const r = src[i * 4];
+            const g = src[i * 4 + 1];
+            const b = src[i * 4 + 2];
+            const a = src[i * 4 + 3];
+            // Если пиксель прозрачный или тёмный — рисовать нельзя
+            if (a < 32) {
+                paintMask[i] = 0;
+            } else if (r < DARK_THRESHOLD && g < DARK_THRESHOLD && b < DARK_THRESHOLD) {
+                paintMask[i] = 0;
+            } else {
+                paintMask[i] = 1;
             }
+        }
+    }
 
-            const stack = [[startX, startY]];
-            while (stack.length) {
-                const [x, y] = stack.pop();
-                if (x < 0 || x >= w || y < 0 || y >= h) continue;
-                if (playerIndex === 0 && x >= HALF) continue;
-                if (playerIndex === 1 && x < HALF) continue;
-                const idx = y * w + x;
-                if (visited[idx]) continue;
-                visited[idx] = 1;
-                const pos = idx * 4;
-                if (!match(pos)) continue;
+    function drawPictureOnCanvas(img) {
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+        ctx.drawImage(img, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
+    }
 
-                data[pos] = fillR;
-                data[pos+1] = fillG;
-                data[pos+2] = fillB;
-                data[pos+3] = 255;
-                filledList.push(idx);
+    socket.on('startDrawing', ({ imageIndex, playerIndex: pIdx }) => {
+        playerIndex = pIdx;
+        selectedImage = imageIndex;
+        document.getElementById('screen-select').classList.add('hidden');
+        document.getElementById('screen-draw').classList.remove('hidden');
+        document.getElementById('draw-info').innerHTML = '🖌️ Рисуйте, удерживая левую кнопку мыши (или палец). <b>Правая кнопка</b> — перемещение холста.';
 
-                stack.push([x+1, y], [x-1, y], [x, y+1], [x, y-1]);
-            }
+        buildPalette();
+        buildReactions();
 
-            for (let pass = 0; pass < 4; pass++) {
-                const newFilled = [];
-                for (const idx of filledList) {
-                    const x = idx % w;
-                    const y = Math.floor(idx / w);
-                    for (let dy = -1; dy <= 1; dy++) {
-                        for (let dx = -1; dx <= 1; dx++) {
-                            if (dx === 0 && dy === 0) continue;
-                            const nx = x + dx, ny = y + dy;
-                            if (nx < 0 || nx >= w || ny < 0 || ny >= h) continue;
-                            if (playerIndex === 0 && nx >= HALF) continue;
-                            if (playerIndex === 1 && nx < HALF) continue;
-                            const nidx = ny * w + nx;
-                            if (visited[nidx]) continue;
-                            const npos = nidx * 4;
-                            const r = data[npos], g = data[npos+1], b = data[npos+2];
-                            if (r > 130 && g > 130 && b > 130) {
-                                visited[nidx] = 1;
-                                data[npos] = fillR;
-                                data[npos+1] = fillG;
-                                data[npos+2] = fillB;
-                                data[npos+3] = 255;
-                                newFilled.push(nidx);
-                            }
-                        }
-                    }
-                }
-                if (newFilled.length === 0) break;
-                filledList.push(...newFilled);
-            }
-
-            ctx.putImageData(imgData, 0, 0);
+        loadPicture(imageIndex + 1).then(img => {
+            drawPictureOnCanvas(img);
+            buildMaskFromImage(img);
             saveHistory();
-            return { x: startX, y: startY, color: fillColor };
-        }
-
-        // ================== ZOOM v3 — плавный transform ==================
-        let zoomLevel = 1;
-        let panX = 0, panY = 0;
-
-        let wrap = canvas.parentElement;
-        if (!wrap || !wrap.classList.contains('zoom-wrap')) {
-            const vp = document.getElementById('canvas-viewport');
-            if (canvas.parentElement) canvas.parentElement.removeChild(canvas);
-            wrap = document.createElement('div');
-            wrap.className = 'zoom-wrap';
-            wrap.style.position = 'absolute';
-            wrap.style.top = '10px';
-            wrap.style.left = '10px';
-            wrap.style.transformOrigin = '0 0';
-            wrap.style.willChange = 'transform';
-            wrap.appendChild(canvas);
-            vp.appendChild(wrap);
-        }
-
-        const viewport = document.getElementById('canvas-viewport');
-
-        function getBaseSize() {
-            return viewport.clientWidth - 20;
-        }
-
-        function applyTransform() {
-            const base = getBaseSize();
-            canvas.style.width = base + 'px';
-            canvas.style.height = base + 'px';
-            wrap.style.transform = `translate(${panX}px, ${panY}px) scale(${zoomLevel})`;
-            document.getElementById('zoom-info').textContent = Math.round(zoomLevel * 100) + '%';
-        }
-
-        function zoomIn() {
-            const oldZoom = zoomLevel;
-            zoomLevel = Math.min(4, zoomLevel + 0.25);
-            const base = getBaseSize();
-            const cx = base / 2, cy = base / 2;
-            const ratio = zoomLevel / oldZoom;
-            panX = cx - (cx - panX) * ratio;
-            panY = cy - (cy - panY) * ratio;
-            applyTransform();
-        }
-
-        function zoomOut() {
-            const oldZoom = zoomLevel;
-            zoomLevel = Math.max(1, zoomLevel - 0.25);
-            const base = getBaseSize();
-            const cx = base / 2, cy = base / 2;
-            const ratio = zoomLevel / oldZoom;
-            panX = cx - (cx - panX) * ratio;
-            panY = cy - (cy - panY) * ratio;
-            clampPan();
-            applyTransform();
-        }
-
-        function zoomReset() {
-            zoomLevel = 1;
             panX = 0; panY = 0;
+            zoomLevel = 1;
             applyTransform();
+        });
+    });
+
+    function saveHistory() {
+        history.push(ctx.getImageData(0, 0, CANVAS_SIZE, CANVAS_SIZE));
+        if (history.length > MAX_HISTORY) history.shift();
+    }
+
+    function undo() {
+        if (history.length < 2) return;
+        history.pop();
+        const prev = history[history.length - 1];
+        ctx.putImageData(prev, 0, 0);
+        socket.emit('undoData', { roomId, playerIndex });
+    }
+
+    socket.on('applyUndo', () => {
+        if (history.length < 2) return;
+        history.pop();
+        const prev = history[history.length - 1];
+        ctx.putImageData(prev, 0, 0);
+    });
+
+    function resetCanvas() {
+        if (!confirm('Очистить весь рисунок?')) return;
+        loadPicture(selectedImage + 1).then(img => {
+            drawPictureOnCanvas(img);
+            saveHistory();
+            socket.emit('resetData', { roomId, playerIndex });
+        });
+    }
+
+    socket.on('applyReset', () => {
+        loadPicture(selectedImage + 1).then(img => {
+            drawPictureOnCanvas(img);
+            saveHistory();
+        });
+    });
+
+    // ================== РИСОВАНИЕ КИСТЬЮ ==================
+    // Рисует линию с учётом маски: пиксели, попадающие на чёрный контур, не закрашиваются
+    function drawLine(x0, y0, x1, y1, color, size) {
+        const radius = size / 2;
+        const steps = Math.max(1, Math.ceil(Math.hypot(x1 - x0, y1 - y0) / (radius * 0.5)));
+
+        // Получаем текущее изображение один раз
+        const imgData = ctx.getImageData(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+        const data = imgData.data;
+
+        const tmp = document.createElement('canvas');
+        tmp.width = tmp.height = 1;
+        const tctx = tmp.getContext('2d');
+        tctx.fillStyle = color;
+        tctx.fillRect(0, 0, 1, 1);
+        const fc = tctx.getImageData(0, 0, 1, 1).data;
+        const fr = fc[0], fg = fc[1], fb = fc[2];
+
+        for (let s = 0; s <= steps; s++) {
+            const t = s / steps;
+            const cx = Math.round(x0 + (x1 - x0) * t);
+            const cy = Math.round(y0 + (y1 - y0) * t);
+
+            const minX = Math.max(0, Math.floor(cx - radius));
+            const maxX = Math.min(CANVAS_SIZE - 1, Math.ceil(cx + radius));
+            const minY = Math.max(0, Math.floor(cy - radius));
+            const maxY = Math.min(CANVAS_SIZE - 1, Math.ceil(cy + radius));
+
+            for (let py = minY; py <= maxY; py++) {
+                for (let px = minX; px <= maxX; px++) {
+                    const dx = px - cx;
+                    const dy = py - cy;
+                    if (dx * dx + dy * dy > radius * radius) continue;
+
+                    const idx = py * CANVAS_SIZE + px;
+                    // Маска: 1 — можно, 0 — нельзя
+                    if (!paintMask || paintMask[idx] !== 1) continue;
+
+                    const pos = idx * 4;
+                    data[pos] = fr;
+                    data[pos + 1] = fg;
+                    data[pos + 2] = fb;
+                    data[pos + 3] = 255;
+                }
+            }
         }
 
-        function clampPan() {
-            const base = getBaseSize();
-            const scaled = base * zoomLevel;
-            const minPan = -(scaled - base);
-            if (panX > 0) panX = 0;
-            if (panX < minPan) panX = minPan;
-            if (panY > 0) panY = 0;
-            if (panY < minPan) panY = minPan;
-        }
+        ctx.putImageData(imgData, 0, 0);
+    }
 
-        viewport.addEventListener('wheel', (e) => {
+    // Отправка штриха по сети — партнёр рисует у себя ту же линию
+    function emitStroke(x0, y0, x1, y1, color, size) {
+        socket.emit('strokeData', {
+            roomId,
+            playerIndex,
+            x0, y0, x1, y1,
+            color,
+            size
+        });
+    }
+
+    socket.on('applyStroke', ({ x0, y0, x1, y1, color, size }) => {
+        drawLine(x0, y0, x1, y1, color, size);
+    });
+
+    // ================== ZOOM / PAN ==================
+    let zoomLevel = 1;
+    let panX = 0, panY = 0;
+
+    const viewport = document.getElementById('canvas-viewport');
+
+    function getBaseSize() {
+        return viewport.clientWidth - 20;
+    }
+
+    function applyTransform() {
+        const base = getBaseSize();
+        canvas.style.width = base + 'px';
+        canvas.style.height = base + 'px';
+        canvas.style.transform = `translate(${panX}px, ${panY}px) scale(${zoomLevel})`;
+        canvas.style.transformOrigin = '0 0';
+        document.getElementById('zoom-info').textContent = Math.round(zoomLevel * 100) + '%';
+    }
+
+    function zoomIn() {
+        const oldZoom = zoomLevel;
+        zoomLevel = Math.min(4, zoomLevel + 0.25);
+        const base = getBaseSize();
+        const cx = base / 2, cy = base / 2;
+        const ratio = zoomLevel / oldZoom;
+        panX = cx - (cx - panX) * ratio;
+        panY = cy - (cy - panY) * ratio;
+        clampPan();
+        applyTransform();
+    }
+
+    function zoomOut() {
+        const oldZoom = zoomLevel;
+        zoomLevel = Math.max(1, zoomLevel - 0.25);
+        const base = getBaseSize();
+        const cx = base / 2, cy = base / 2;
+        const ratio = zoomLevel / oldZoom;
+        panX = cx - (cx - panX) * ratio;
+        panY = cy - (cy - panY) * ratio;
+        clampPan();
+        applyTransform();
+    }
+
+    function zoomReset() {
+        zoomLevel = 1;
+        panX = 0; panY = 0;
+        applyTransform();
+    }
+
+    function clampPan() {
+        const base = getBaseSize();
+        const scaled = base * zoomLevel;
+        const minPan = -(scaled - base);
+        if (panX > 0) panX = 0;
+        if (panX < minPan) panX = minPan;
+        if (panY > 0) panY = 0;
+        if (panY < minPan) panY = minPan;
+    }
+
+    viewport.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const rect = viewport.getBoundingClientRect();
+        const mx = e.clientX - rect.left - 10;
+        const my = e.clientY - rect.top - 10;
+
+        const oldZoom = zoomLevel;
+        const delta = e.deltaY < 0 ? 0.15 : -0.15;
+        zoomLevel = Math.max(1, Math.min(4, zoomLevel + delta));
+        const ratio = zoomLevel / oldZoom;
+
+        panX = mx - (mx - panX) * ratio;
+        panY = my - (my - panY) * ratio;
+        clampPan();
+        applyTransform();
+    }, { passive: false });
+
+    // ================== КООРДИНАТЫ ==================
+    function getCanvasPos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        let clientX, clientY;
+        if (e.touches && e.touches[0]) {
+            clientX = e.touches[0].clientX;
+            clientY = e.touches[0].clientY;
+        } else {
+            clientX = e.clientX;
+            clientY = e.clientY;
+        }
+        return {
+            x: (clientX - rect.left) * scaleX,
+            y: (clientY - rect.top) * scaleY
+        };
+    }
+
+    // ================== СОБЫТИЯ МЫШИ ==================
+    let isPanning = false;
+    let panStartX = 0, panStartY = 0;
+    let panStartPanX = 0, panStartPanY = 0;
+
+    canvas.addEventListener('mousedown', (e) => {
+        if (e.button === 2) {
+            // Правая кнопка — панорамирование
+            isPanning = true;
+            panStartX = e.clientX;
+            panStartY = e.clientY;
+            panStartPanX = panX;
+            panStartPanY = panY;
+            canvas.classList.add('panning');
             e.preventDefault();
-            const rect = viewport.getBoundingClientRect();
-            const mx = e.clientX - rect.left - 10;
-            const my = e.clientY - rect.top - 10;
+            return;
+        }
+        if (e.button !== 0) return;
 
-            const oldZoom = zoomLevel;
-            const delta = e.deltaY < 0 ? 0.15 : -0.15;
-            zoomLevel = Math.max(1, Math.min(4, zoomLevel + delta));
-            const ratio = zoomLevel / oldZoom;
+        // Левая кнопка — рисование
+        isDrawing = true;
+        const p = getCanvasPos(e);
+        lastX = p.x;
+        lastY = p.y;
+        // Точка
+        drawLine(lastX, lastY, lastX, lastY, currentColor, currentBrushSize);
+        emitStroke(lastX, lastY, lastX, lastY, currentColor, currentBrushSize);
+        e.preventDefault();
+    });
 
-            panX = mx - (mx - panX) * ratio;
-            panY = my - (my - panY) * ratio;
+    canvas.addEventListener('mousemove', (e) => {
+        if (isPanning) {
+            panX = panStartPanX + (e.clientX - panStartX);
+            panY = panStartPanY + (e.clientY - panStartY);
             clampPan();
             applyTransform();
-        }, { passive: false });
+            e.preventDefault();
+            return;
+        }
+        if (!isDrawing) return;
+        const p = getCanvasPos(e);
+        drawLine(lastX, lastY, p.x, p.y, currentColor, currentBrushSize);
+        emitStroke(lastX, lastY, p.x, p.y, currentColor, currentBrushSize);
+        lastX = p.x;
+        lastY = p.y;
+        e.preventDefault();
+    });
 
-        let initialDistance = 0;
-        let initialZoom = 1;
-        let initialMidX = 0, initialMidY = 0;
+    window.addEventListener('mouseup', (e) => {
+        if (isPanning) {
+            isPanning = false;
+            canvas.classList.remove('panning');
+        }
+        if (isDrawing) {
+            isDrawing = false;
+            saveHistory();
+            socket.emit('saveHistoryRequest', { roomId, playerIndex });
+        }
+    });
 
-        viewport.addEventListener('touchstart', (e) => {
-            if (e.touches.length === 2) {
-                const dx = e.touches[0].clientX - e.touches[1].clientX;
-                const dy = e.touches[0].clientY - e.touches[1].clientY;
-                initialDistance = Math.hypot(dx, dy);
-                initialZoom = zoomLevel;
-                const rect = viewport.getBoundingClientRect();
-                const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
-                const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
-                initialMidX = midX - rect.left - 10;
-                initialMidY = midY - rect.top - 10;
-                e.preventDefault();
-            }
-        }, { passive: false });
+    canvas.addEventListener('contextmenu', (e) => e.preventDefault());
 
-        viewport.addEventListener('touchmove', (e) => {
-            if (e.touches.length === 2 && initialDistance > 0) {
-                const dx = e.touches[0].clientX - e.touches[1].clientX;
-                const dy = e.touches[0].clientY - e.touches[1].clientY;
-                const distance = Math.hypot(dx, dy);
-                const newZoom = Math.max(1, Math.min(4, initialZoom * (distance / initialDistance)));
-                const ratio = newZoom / zoomLevel;
-                panX = initialMidX - (initialMidX - panX) * ratio;
-                panY = initialMidY - (initialMidY - panY) * ratio;
-                zoomLevel = newZoom;
-                clampPan();
-                applyTransform();
-                e.preventDefault();
-            }
-        }, { passive: false });
+    // ================== СОБЫТИЯ ТАЧА ==================
+    let touchDrawing = false;
+    let touchLastX = 0, touchLastY = 0;
+    let touchPanning = false;
+    let touchPanStartX = 0, touchPanStartY = 0;
+    let touchPanStartPanX = 0, touchPanStartPanY = 0;
+    let touchStartTime = 0;
+    let touchStartX = 0, touchStartY = 0;
+    let longPressTimer = null;
+    let isLongPress = false;
 
-        // Панорамирование Shift+мышь
-        let isPanning = false;
-        let panStartX = 0, panStartY = 0;
-        let panStartPanX = 0, panStartPanY = 0;
+    canvas.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 2) {
+            // Два пальца — панорамирование
+            touchPanning = true;
+            touchPanStartX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+            touchPanStartY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+            touchPanStartPanX = panX;
+            touchPanStartPanY = panY;
+            e.preventDefault();
+            return;
+        }
+        if (e.touches.length === 1) {
+            touchStartTime = Date.now();
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+            isLongPress = false;
 
-        viewport.addEventListener('mousedown', (e) => {
-            if (zoomLevel > 1 && e.shiftKey) {
-                isPanning = true;
-                panStartX = e.clientX;
-                panStartY = e.clientY;
-                panStartPanX = panX;
-                panStartPanY = panY;
-                viewport.style.cursor = 'grabbing';
-                e.preventDefault();
-            }
-        });
-
-        window.addEventListener('mousemove', (e) => {
-            if (isPanning) {
-                panX = panStartPanX + (e.clientX - panStartX);
-                panY = panStartPanY + (e.clientY - panStartY);
-                clampPan();
-                applyTransform();
-            }
-        });
-
-        window.addEventListener('mouseup', () => {
-            if (isPanning) {
-                isPanning = false;
-                viewport.style.cursor = '';
-            }
-        });
-
-        // Панорамирование двумя пальцами (телефон)
-        let touchPanStartX = 0, touchPanStartY = 0;
-        let touchPanStartPanX = 0, touchPanStartPanY = 0;
-        let isTouchPanning = false;
-
-        viewport.addEventListener('touchstart', (e) => {
-            if (e.touches.length === 2 && zoomLevel > 1 && initialDistance === 0) {
-                isTouchPanning = true;
-                touchPanStartX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
-                touchPanStartY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+            // Долгое нажатие (600мс) — панорамирование
+            longPressTimer = setTimeout(() => {
+                isLongPress = true;
+                touchPanning = true;
+                touchPanStartX = e.touches[0].clientX;
+                touchPanStartY = e.touches[0].clientY;
                 touchPanStartPanX = panX;
                 touchPanStartPanY = panY;
-            }
-        }, { passive: true });
+            }, 600);
 
-        viewport.addEventListener('touchmove', (e) => {
-            if (isTouchPanning && e.touches.length === 2) {
-                const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
-                const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
-                panX = touchPanStartPanX + (midX - touchPanStartX);
-                panY = touchPanStartPanY + (midY - touchPanStartY);
-                clampPan();
-                applyTransform();
-                e.preventDefault();
-            }
-        }, { passive: false });
-
-        viewport.addEventListener('touchend', (e) => {
-            if (e.touches.length < 2) isTouchPanning = false;
-        });
-
-        // ================== КЛИКИ ==================
-        function getPos(e) {
-            const rect = canvas.getBoundingClientRect();
-            const scaleX = canvas.width / rect.width;
-            const scaleY = canvas.height / rect.height;
-            let clientX, clientY;
-            if (e.touches && e.touches[0]) { clientX = e.touches[0].clientX; clientY = e.touches[0].clientY; }
-            else if (e.changedTouches && e.changedTouches[0]) { clientX = e.changedTouches[0].clientX; clientY = e.changedTouches[0].clientY; }
-            else { clientX = e.clientX; clientY = e.clientY; }
-            return {
-                x: Math.floor((clientX - rect.left) * scaleX),
-                y: Math.floor((clientY - rect.top) * scaleY)
-            };
+            // Начинаем рисование сразу, но если сработает долгое нажатие — отменим
+            const p = getCanvasPos(e);
+            touchLastX = p.x;
+            touchLastY = p.y;
+            touchDrawing = true;
+            // Не рисуем точку сразу, дождёмся подтверждения, что это не панорамирование
         }
+    }, { passive: false });
 
-        let touchStartPos = null;
-        canvas.addEventListener('touchstart', (e) => {
-            if (e.touches.length === 1) {
-                touchStartPos = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-            }
-        }, { passive: true });
-
-        function handleAction(e) {
-            if (e.touches && e.touches.length > 1) return;
+    canvas.addEventListener('touchmove', (e) => {
+        if (touchPanning && e.touches.length >= 1) {
+            const cx = e.touches.length >= 2
+                ? (e.touches[0].clientX + e.touches[1].clientX) / 2
+                : e.touches[0].clientX;
+            const cy = e.touches.length >= 2
+                ? (e.touches[0].clientY + e.touches[1].clientY) / 2
+                : e.touches[0].clientY;
+            panX = touchPanStartPanX + (cx - touchPanStartX);
+            panY = touchPanStartPanY + (cy - touchPanStartY);
+            clampPan();
+            applyTransform();
             e.preventDefault();
-            const { x, y } = getPos(e);
-            if (x < 0 || x >= canvas.width || y < 0 || y >= canvas.height) return;
-            const info = floodFill(x, y, currentColor);
-            if (info) socket.emit('fillData', { roomId, playerIndex, data: info });
+            return;
         }
+        if (touchDrawing && !isLongPress && e.touches.length === 1) {
+            const p = getCanvasPos(e);
+            drawLine(touchLastX, touchLastY, p.x, p.y, currentColor, currentBrushSize);
+            emitStroke(touchLastX, touchLastY, p.x, p.y, currentColor, currentBrushSize);
+            touchLastX = p.x;
+            touchLastY = p.y;
+            e.preventDefault();
+        }
+    }, { passive: false });
 
-        canvas.addEventListener('click', handleAction);
-        canvas.addEventListener('touchend', (e) => {
-            if (e.touches.length > 0) return;
-            if (touchStartPos && e.changedTouches[0]) {
-                const dx = e.changedTouches[0].clientX - touchStartPos.x;
-                const dy = e.changedTouches[0].clientY - touchStartPos.y;
-                if (Math.hypot(dx, dy) > 10) return;
+    canvas.addEventListener('touchend', (e) => {
+        clearTimeout(longPressTimer);
+        if (touchPanning) {
+            if (e.touches.length === 0) {
+                touchPanning = false;
             }
-            handleAction(e);
-        });
-        socket.on('applyFill', ({ data }) => floodFill(data.x, data.y, data.color));
-
-        // ================== ФИНАЛ ==================
-        function finish() {
-            // Отправляем в SEND_SIZE с высоким качеством сглаживания
-            const tmp = document.createElement('canvas');
-            tmp.width = SEND_SIZE; tmp.height = SEND_SIZE;
-            const tctx = tmp.getContext('2d');
-            tctx.imageSmoothingEnabled = true;
-            tctx.imageSmoothingQuality = 'high';
-            tctx.drawImage(canvas, 0, 0, SEND_SIZE, SEND_SIZE);
-            const imageData = tmp.toDataURL('image/png', 1.0);
-
-            document.getElementById('draw-info').innerText = '⏳ Ждём друга...';
-            socket.emit('notifyFinished', { roomId, playerIndex, name: myName, avatar: myAvatar });
-            socket.emit('finishDrawing', { roomId, playerIndex, imageData });
+            return;
         }
-
-        socket.on('partnerFinished', ({ name, avatar }) => {
-            showBubble({ emoji: '✅', avatar, text: `${name} нажал «Готово»!` });
-        });
-
-        socket.on('mergeImages', (drawings) => {
-            document.getElementById('screen-draw').classList.add('hidden');
-            document.getElementById('screen-result').classList.remove('hidden');
-            const fc = document.getElementById('finalCanvas');
-            const fx = fc.getContext('2d');
-            fx.imageSmoothingEnabled = true;
-            fx.imageSmoothingQuality = 'high';
-            fx.fillStyle = 'white';
-            fx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-
-            const i1 = new Image();
-            const i2 = new Image();
-            i1.src = drawings[0];
-            i2.src = drawings[1];
-
-            let loaded = 0;
-            function check() {
-                loaded++;
-                if (loaded === 2) {
-                    // Оба изображения SEND_SIZE × SEND_SIZE, где половина — наша половина
-                    // Левая половина от Игрока 1: от (0,0) до (SEND_SIZE/2, SEND_SIZE)
-                    // Приводим к размеру CANVAS_SIZE: 
-                    // Левая половина = SEND_SIZE/2 * (CANVAS_SIZE/SEND_SIZE) = CANVAS_SIZE/2
-                    fx.drawImage(i1, 0, 0, SEND_SIZE / 2, SEND_SIZE, 0, 0, HALF, CANVAS_SIZE);
-                    fx.drawImage(i2, SEND_SIZE / 2, 0, SEND_SIZE / 2, SEND_SIZE, HALF, 0, HALF, CANVAS_SIZE);
-                }
-            }
-            i1.onload = check;
-            i2.onload = check;
-        });
-
-        function downloadImage() {
-            const fc = document.getElementById('finalCanvas');
-            const link = document.createElement('a');
-            link.download = 'наша_картина_' + roomId + '.png';
-            link.href = fc.toDataURL('image/png');
-            link.click();
+        if (touchDrawing && !isLongPress) {
+            touchDrawing = false;
+            saveHistory();
+            socket.emit('saveHistoryRequest', { roomId, playerIndex });
         }
+        touchDrawing = false;
+        isLongPress = false;
+    });
 
-        // ================== ИНИЦИАЛИЗАЦИЯ ==================
-        requestAnimationFrame(applyTransform);
-        window.addEventListener('resize', () => { clampPan(); applyTransform(); });
-    </script>
+    canvas.addEventListener('touchcancel', () => {
+        clearTimeout(longPressTimer);
+        touchDrawing = false;
+        touchPanning = false;
+        isLongPress = false;
+    });
+
+    // Сохранение истории по запросу партнёра (для отмены)
+    socket.on('saveHistoryRequest', () => {
+        // Ничего не делаем — история у каждого своя
+    });
+
+    // ================== ФИНАЛ ==================
+    function finish() {
+        const tmp = document.createElement('canvas');
+        tmp.width = SEND_SIZE; tmp.height = SEND_SIZE;
+        const tctx = tmp.getContext('2d');
+        tctx.imageSmoothingEnabled = true;
+        tctx.imageSmoothingQuality = 'high';
+        tctx.drawImage(canvas, 0, 0, SEND_SIZE, SEND_SIZE);
+        const imageData = tmp.toDataURL('image/png', 1.0);
+
+        document.getElementById('draw-info').innerText = '⏳ Ждём друга...';
+        socket.emit('notifyFinished', { roomId, playerIndex, name: myName, avatar: myAvatar });
+        socket.emit('finishDrawing', { roomId, playerIndex, imageData });
+    }
+
+    socket.on('partnerFinished', ({ name, avatar }) => {
+        showBubble({ emoji: '✅', avatar, text: `${name} нажал «Готово»!` });
+    });
+
+    socket.on('mergeImages', (drawings) => {
+        document.getElementById('screen-draw').classList.add('hidden');
+        document.getElementById('screen-result').classList.remove('hidden');
+        const fc = document.getElementById('finalCanvas');
+        const fx = fc.getContext('2d');
+        fx.imageSmoothingEnabled = true;
+        fx.imageSmoothingQuality = 'high';
+        fx.fillStyle = 'white';
+        fx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+
+        // Теперь у нас общий холст, оба игрока рисуют на одном и том же.
+        // Берём рисунок любого (они одинаковые), но если вдруг разные — накладываем.
+        const i1 = new Image();
+        i1.src = drawings[0];
+        i1.onload = () => {
+            fx.drawImage(i1, 0, 0, SEND_SIZE, SEND_SIZE, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
+        };
+    });
+
+    function downloadImage() {
+        const fc = document.getElementById('finalCanvas');
+        const link = document.createElement('a');
+        link.download = 'наша_картина_' + roomId + '.png';
+        link.href = fc.toDataURL('image/png');
+        link.click();
+    }
+
+    // ================== ИНИЦИАЛИЗАЦИЯ ==================
+    requestAnimationFrame(applyTransform);
+    window.addEventListener('resize', () => { clampPan(); applyTransform(); });
+</script>
 </body>
+</html>
