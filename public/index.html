@@ -229,7 +229,6 @@
         50% { box-shadow: 0 0 32px rgba(102,187,106,0.95); }
     }
 
-    /* === НОВАЯ СТРУКТУРА РИСОВАНИЯ === */
     .draw-layout {
         display: flex;
         gap: 14px;
@@ -254,7 +253,6 @@
         top: 10px;
     }
 
-    /* Большие плашки режимов */
     .mode-tiles {
         display: flex;
         gap: 10px;
@@ -304,7 +302,6 @@
         50% { box-shadow: 0 0 20px #66BB6A, 0 0 0 2px rgba(0,0,0,0.3); }
     }
 
-    /* Панель цветов */
     .color-panel {
         background: rgba(255,182,193,0.08);
         border-radius: 18px;
@@ -423,9 +420,9 @@
     .canvas-viewport {
         position: relative;
         width: 100%;
-        aspect-ratio: 1 / 1;
-        max-height: 60vh;
-        max-height: 60dvh;
+        aspect-ratio: 1 / 2;
+        max-height: 75vh;
+        max-height: 75dvh;
         overflow: hidden;
         border-radius: 22px;
         background: linear-gradient(135deg, rgba(255,182,193,0.15), rgba(255,215,0,0.1));
@@ -684,7 +681,7 @@
         .zoom-btn { width: 40px; height: 40px; font-size: 16px; }
         .zoom-info { font-size: 11px; padding: 0 5px; min-width: 40px; }
         .phrase-btn { padding: 6px 12px; font-size: 12px; }
-        .canvas-viewport { max-height: 50vh; max-height: 50dvh; border-radius: 16px; }
+        .canvas-viewport { max-height: 60vh; max-height: 60dvh; border-radius: 16px; }
         .avatar-item { width: 46px; height: 46px; font-size: 24px; }
         .brush-wrap { font-size: 12px; padding: 10px 12px; }
         #bubbles { max-width: 220px; right: 10px; top: 10px; }
@@ -785,7 +782,7 @@
                 <div class="canvas-stage">
                     <div class="canvas-viewport" id="canvas-viewport">
                         <div class="zoom-wrap" id="zoom-wrap">
-                            <canvas id="canvas" width="1600" height="1600"></canvas>
+                            <canvas id="canvas" width="800" height="1600"></canvas>
                         </div>
                     </div>
                 </div>
@@ -928,9 +925,10 @@ let fillMode = false;
 let iAmReady = false;
 let partnerReady = false;
 
-const CANVAS_SIZE = 1600;
-const HALF = CANVAS_SIZE / 2;
-const SEND_SIZE = 1200;
+const HALF_W = 800;
+const FULL_H = 1600;
+const SEND_W = 600;
+const SEND_H = 1200;
 const TOTAL_IMAGES = 13;
 
 const canvas = document.getElementById('canvas');
@@ -973,6 +971,8 @@ const IMAGE_EXT = ['svg','png'];
 
 const zoomPanel = document.getElementById('zoomPanel');
 const finishBtn = document.getElementById('finishBtn');
+
+let sourceImage = null;
 
 function buildAvatars() {
     const p = document.getElementById('avatar-select');
@@ -1248,8 +1248,8 @@ socket.on('startDrawing', ({ imageIndex, playerIndex: pIdx }) => {
     finishBtn.textContent = '✅ Готово!';
 
     document.getElementById('draw-info').innerHTML = (playerIndex === 0)
-        ? '🖌️ Твоя часть: <b>левая</b>. ЛКМ — рисовать, ПКМ — двигать, колесо — зум.'
-        : '🖌️ Твоя часть: <b>правая</b>. ЛКМ — рисовать, ПКМ — двигать, колесо — зум.';
+        ? '🖌️ Твоя часть: <b>левая</b>. Колесо — зум, ПКМ — панорама, 2 пальца — зум.'
+        : '🖌️ Твоя часть: <b>правая</b>. Колесо — зум, ПКМ — панорама, 2 пальца — зум.';
 
     buildPalette();
     buildReactions();
@@ -1257,6 +1257,7 @@ socket.on('startDrawing', ({ imageIndex, playerIndex: pIdx }) => {
     setMode('brush');
 
     loadPicture(imageIndex + 1).then(img => {
+        sourceImage = img;
         initBoard(img);
         document.getElementById('tutorial').classList.remove('hidden');
     });
@@ -1268,63 +1269,47 @@ function closeTutorial() {
 
 function initBoard(img) {
     ctx.fillStyle = 'white';
-    ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-    ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = 'high';
-    ctx.drawImage(img, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
+    ctx.fillRect(0, 0, HALF_W, FULL_H);
 
-    const imgData = ctx.getImageData(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(
+        img,
+        0, 0, img.width, img.height,
+        0, 0, HALF_W * 2, FULL_H
+    );
+    ctx.imageSmoothingEnabled = true;
+
+    const imgData = ctx.getImageData(0, 0, HALF_W, FULL_H);
     const d = imgData.data;
-    for (let i = 0; i < d.length; i += 4) {
-        const r = d[i], g = d[i+1], b = d[i+2];
-        const brightness = (r + g + b) / 3;
-        if (brightness > 90) {
-            d[i] = 255; d[i+1] = 255; d[i+2] = 255; d[i+3] = 255;
-        } else {
-            d[i] = 0; d[i+1] = 0; d[i+2] = 0; d[i+3] = 255;
+
+    allowedMask = new Uint8Array(HALF_W * FULL_H);
+
+    for (let y = 0; y < FULL_H; y++) {
+        for (let x = 0; x < HALF_W; x++) {
+            const idx = y * HALF_W + x;
+            const pos = idx * 4;
+            const r = d[pos], g = d[pos+1], b = d[pos+2];
+            const brightness = (r + g + b) / 3;
+            if (brightness > 90) {
+                d[pos] = 255; d[pos+1] = 255; d[pos+2] = 255; d[pos+3] = 255;
+                allowedMask[idx] = 1;
+            } else {
+                d[pos] = 0; d[pos+1] = 0; d[pos+2] = 0; d[pos+3] = 255;
+                allowedMask[idx] = 0;
+            }
         }
     }
     ctx.putImageData(imgData, 0, 0);
 
-    allowedMask = new Uint8Array(CANVAS_SIZE * CANVAS_SIZE);
-    for (let y = 0; y < CANVAS_SIZE; y++) {
-        for (let x = 0; x < CANVAS_SIZE; x++) {
-            if (playerIndex === 0 && x >= HALF) continue;
-            if (playerIndex === 1 && x < HALF) continue;
-            const idx = y * CANVAS_SIZE + x;
-            const pos = idx * 4;
-            const r = d[pos];
-            if (r > 200) allowedMask[idx] = 1;
-        }
-    }
-
-    hidePartnerHalf();
-
-    zoomLevel = 1; panX = 0; panY = 0;
+    zoomLevel = 1;
+    panX = 0; panY = 0;
     history.length = 0;
     pushHistory();
     applyTransform();
 }
 
-function hidePartnerHalf() {
-    if (playerIndex === 0) {
-        ctx.fillStyle = '#1a1a2e';
-        ctx.fillRect(HALF, 0, HALF, CANVAS_SIZE);
-    } else {
-        ctx.fillStyle = '#1a1a2e';
-        ctx.fillRect(0, 0, HALF, CANVAS_SIZE);
-    }
-}
-
-function captureMyHalf() {
-    const startX = playerIndex === 0 ? 0 : HALF;
-    const w = HALF;
-    const h = CANVAS_SIZE;
-    return ctx.getImageData(startX, 0, w, h);
-}
-
 function pushHistory() {
-    history.push(captureMyHalf());
+    history.push(ctx.getImageData(0, 0, HALF_W, FULL_H));
     if (history.length > MAX_HISTORY) history.shift();
 }
 
@@ -1363,8 +1348,7 @@ function undoStroke() {
     resetReadyState();
     history.pop();
     const prev = history[history.length - 1];
-    const startX = playerIndex === 0 ? 0 : HALF;
-    ctx.putImageData(prev, startX, 0);
+    ctx.putImageData(prev, 0, 0);
     socket.emit('undoData', { roomId, playerIndex });
 }
 
@@ -1381,10 +1365,7 @@ function resetMyHalf() {
 }
 
 function clearMyHalf() {
-    const startX = playerIndex === 0 ? 0 : HALF;
-    const w = HALF;
-
-    const imgData = ctx.getImageData(startX, 0, w, CANVAS_SIZE);
+    const imgData = ctx.getImageData(0, 0, HALF_W, FULL_H);
     const d = imgData.data;
     for (let i = 0; i < d.length; i += 4) {
         const r = d[i];
@@ -1392,7 +1373,7 @@ function clearMyHalf() {
             d[i] = 255; d[i+1] = 255; d[i+2] = 255; d[i+3] = 255;
         }
     }
-    ctx.putImageData(imgData, startX, 0);
+    ctx.putImageData(imgData, 0, 0);
 }
 
 socket.on('applyReset', () => {
@@ -1502,7 +1483,7 @@ function strokeSegment(x0, y0, x1, y1, color, size) {
     const dist = Math.hypot(dx, dy);
     const step = Math.max(1, Math.floor(dist));
     const r = size / 2;
-    const imgData = ctx.getImageData(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+    const imgData = ctx.getImageData(0, 0, HALF_W, FULL_H);
     const d = imgData.data;
 
     const tmp = document.createElement('canvas');
@@ -1518,16 +1499,16 @@ function strokeSegment(x0, y0, x1, y1, color, size) {
         const cx = Math.round(x0 + dx * t);
         const cy = Math.round(y0 + dy * t);
         const minX = Math.max(0, Math.floor(cx - r));
-        const maxX = Math.min(CANVAS_SIZE - 1, Math.ceil(cx + r));
+        const maxX = Math.min(HALF_W - 1, Math.ceil(cx + r));
         const minY = Math.max(0, Math.floor(cy - r));
-        const maxY = Math.min(CANVAS_SIZE - 1, Math.ceil(cy + r));
+        const maxY = Math.min(FULL_H - 1, Math.ceil(cy + r));
 
         for (let y = minY; y <= maxY; y++) {
             for (let x = minX; x <= maxX; x++) {
                 const ddx = x - cx, ddy = y - cy;
                 if (ddx*ddx + ddy*ddy > r*r) continue;
 
-                const idx = y * CANVAS_SIZE + x;
+                const idx = y * HALF_W + x;
                 if (!allowedMask[idx]) continue;
 
                 const pos = idx * 4;
@@ -1543,13 +1524,14 @@ function strokeSegment(x0, y0, x1, y1, color, size) {
 
 function floodFill(startX, startY, fillColor) {
     if (!allowedMask) return;
-    if (playerIndex === 0 && startX >= HALF) return;
-    if (playerIndex === 1 && startX < HALF) return;
+    if (startX < 0 || startX >= HALF_W || startY < 0 || startY >= FULL_H) return;
 
-    const w = CANVAS_SIZE, h = CANVAS_SIZE;
-    const imgData = ctx.getImageData(0, 0, w, h);
+    const imgData = ctx.getImageData(0, 0, HALF_W, FULL_H);
     const data = imgData.data;
-    const startPos = (startY * w + startX) * 4;
+    const startIdx = startY * HALF_W + startX;
+    if (!allowedMask[startIdx]) return;
+
+    const startPos = startIdx * 4;
     const startR = data[startPos];
     const startG = data[startPos + 1];
     const startB = data[startPos + 2];
@@ -1567,15 +1549,13 @@ function floodFill(startX, startY, fillColor) {
     if (Math.abs(startR - fillR) < 6 && Math.abs(startG - fillG) < 6 && Math.abs(startB - fillB) < 6) return;
 
     const tolerance = 60;
-    const visited = new Uint8Array(w * h);
+    const visited = new Uint8Array(HALF_W * FULL_H);
     const stack = [[startX, startY]];
 
     while (stack.length) {
         const [x, y] = stack.pop();
-        if (x < 0 || x >= w || y < 0 || y >= h) continue;
-        if (playerIndex === 0 && x >= HALF) continue;
-        if (playerIndex === 1 && x < HALF) continue;
-        const idx = y * w + x;
+        if (x < 0 || x >= HALF_W || y < 0 || y >= FULL_H) continue;
+        const idx = y * HALF_W + x;
         if (visited[idx]) continue;
         visited[idx] = 1;
         const pos = idx * 4;
@@ -1602,14 +1582,24 @@ let zoomLevel = 1;
 let panX = 0, panY = 0;
 
 function getBaseSize() {
-    return Math.min(viewport.clientWidth, viewport.clientHeight);
+    return {
+        w: viewport.clientWidth,
+        h: viewport.clientHeight
+    };
 }
 
 function applyTransform() {
-    const base = getBaseSize();
-    canvas.style.width = base + 'px';
-    canvas.style.height = base + 'px';
-    wrap.style.transform = `translate(${panX}px, ${panY}px) scale(${zoomLevel})`;
+    const { w, h } = getBaseSize();
+    const scaleToFit = Math.min(w / HALF_W, h / FULL_H);
+    const baseW = HALF_W * scaleToFit;
+    const baseH = FULL_H * scaleToFit;
+    canvas.style.width = baseW + 'px';
+    canvas.style.height = baseH + 'px';
+
+    const offsetX = (w - baseW * zoomLevel) / 2;
+    const offsetY = (h - baseH * zoomLevel) / 2;
+
+    wrap.style.transform = `translate(${offsetX + panX}px, ${offsetY + panY}px) scale(${zoomLevel})`;
     document.getElementById('zoom-info').textContent = Math.round(zoomLevel * 100) + '%';
 }
 
@@ -1620,23 +1610,26 @@ function zoomReset() { zoomLevel = 1; panX = 0; panY = 0; applyTransform(); }
 function zoomAtCenter(factor) {
     const oldZoom = zoomLevel;
     zoomLevel = Math.max(1, Math.min(6, zoomLevel * factor));
-    const base = getBaseSize();
-    const cx = base / 2, cy = base / 2;
     const ratio = zoomLevel / oldZoom;
-    panX = cx - (cx - panX) * ratio;
-    panY = cy - (cy - panY) * ratio;
+    panX = panX * ratio;
+    panY = panY * ratio;
     clampPan();
     applyTransform();
 }
 
 function clampPan() {
-    const base = getBaseSize();
-    const scaled = base * zoomLevel;
-    const minPan = -(scaled - base);
-    if (panX > 0) panX = 0;
-    if (panX < minPan) panX = minPan;
-    if (panY > 0) panY = 0;
-    if (panY < minPan) panY = minPan;
+    const { w, h } = getBaseSize();
+    const scaleToFit = Math.min(w / HALF_W, h / FULL_H);
+    const baseW = HALF_W * scaleToFit;
+    const baseH = FULL_H * scaleToFit;
+    const scaledW = baseW * zoomLevel;
+    const scaledH = baseH * zoomLevel;
+    const maxPanX = Math.max(0, (scaledW - w) / 2);
+    const maxPanY = Math.max(0, (scaledH - h) / 2);
+    if (panX > maxPanX) panX = maxPanX;
+    if (panX < -maxPanX) panX = -maxPanX;
+    if (panY > maxPanY) panY = maxPanY;
+    if (panY < -maxPanY) panY = -maxPanY;
 }
 
 function getPos(clientX, clientY) {
@@ -1698,10 +1691,6 @@ viewport.addEventListener('mousemove', (e) => {
     if (!drawing) return;
 
     const p = getPos(e.clientX, e.clientY);
-    if (!isInAllowedHalf(p.x)) {
-        lastX = null; lastY = null;
-        return;
-    }
     if (lastX === null) {
         lastX = p.x; lastY = p.y;
         return;
@@ -1735,7 +1724,7 @@ viewport.addEventListener('mousedown', (e) => {
     if (e.button !== 0) return;
 
     const p = getPos(e.clientX, e.clientY);
-    if (!isInAllowedHalf(p.x)) return;
+    if (p.x < 0 || p.x >= HALF_W || p.y < 0 || p.y >= FULL_H) return;
 
     resetReadyState();
 
@@ -1776,25 +1765,20 @@ window.addEventListener('mouseup', (e) => {
 
 viewport.addEventListener('wheel', (e) => {
     e.preventDefault();
-    const rect = viewport.getBoundingClientRect();
-    const mx = e.clientX - rect.left;
-    const my = e.clientY - rect.top;
-
     const oldZoom = zoomLevel;
     const factor = e.deltaY < 0 ? 1.15 : 1/1.15;
     zoomLevel = Math.max(1, Math.min(6, zoomLevel * factor));
     const ratio = zoomLevel / oldZoom;
-
-    panX = mx - (mx - panX) * ratio;
-    panY = my - (my - panY) * ratio;
+    panX = panX * ratio;
+    panY = panY * ratio;
     clampPan();
     applyTransform();
     updateBrushCursor();
 }, { passive: false });
 
 let touchMode = null;
-let tStartDist = 0, tStartZoom = 1, tStartMidX = 0, tStartMidY = 0;
-let tStartPanX = 0, tStartPanY = 0;
+let tStartDist = 0, tStartZoom = 1, tStartPanX = 0, tStartPanY = 0;
+let tStartMidX = 0, tStartMidY = 0;
 
 viewport.addEventListener('touchstart', (e) => {
     if (e.touches.length === 2) {
@@ -1812,7 +1796,7 @@ viewport.addEventListener('touchstart', (e) => {
     }
     if (e.touches.length === 1) {
         const p = getPos(e.touches[0].clientX, e.touches[0].clientY);
-        if (!isInAllowedHalf(p.x)) return;
+        if (p.x < 0 || p.x >= HALF_W || p.y < 0 || p.y >= FULL_H) return;
 
         touchMode = 'draw';
         resetReadyState();
@@ -1847,12 +1831,10 @@ viewport.addEventListener('touchmove', (e) => {
         const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2 - rect.top;
 
         const newZoom = Math.max(1, Math.min(6, tStartZoom * (dist / tStartDist)));
-        const ratio = newZoom / tStartZoom;
         zoomLevel = newZoom;
-        const cx = midX, cy = midY;
-        panX = cx - (cx - tStartPanX) * ratio;
-        panY = cy - (cy - tStartPanY) * ratio;
-
+        const ratio = newZoom / tStartZoom;
+        panX = tStartPanX * ratio + (midX - tStartMidX);
+        panY = tStartPanY * ratio + (midY - tStartMidY);
         clampPan();
         applyTransform();
         e.preventDefault();
@@ -1860,7 +1842,6 @@ viewport.addEventListener('touchmove', (e) => {
     }
     if (touchMode === 'draw' && e.touches.length === 1 && drawing) {
         const p = getPos(e.touches[0].clientX, e.touches[0].clientY);
-        if (!isInAllowedHalf(p.x)) { lastX = null; lastY = null; e.preventDefault(); return; }
         if (lastX === null) { lastX = p.x; lastY = p.y; return; }
         strokeSegment(lastX, lastY, p.x, p.y, currentColor, brushSize);
         socket.emit('strokeData', {
@@ -1883,12 +1864,6 @@ viewport.addEventListener('touchend', (e) => {
     }
 });
 
-function isInAllowedHalf(x) {
-    if (playerIndex === 0) return x < HALF;
-    if (playerIndex === 1) return x >= HALF;
-    return false;
-}
-
 socket.on('applyStroke', ({ stroke }) => {
     clearPartnerReadyLocal();
     if (!allowedMask || !stroke) return;
@@ -1907,18 +1882,12 @@ socket.on('partnerUnready', () => {
 
 function finish() {
     const tmp = document.createElement('canvas');
-    tmp.width = SEND_SIZE;
-    tmp.height = SEND_SIZE;
+    tmp.width = SEND_W;
+    tmp.height = SEND_H;
     const tctx = tmp.getContext('2d');
     tctx.imageSmoothingEnabled = true;
     tctx.imageSmoothingQuality = 'high';
-
-    const startX = playerIndex === 0 ? 0 : HALF;
-    tctx.drawImage(
-        canvas,
-        startX, 0, HALF, CANVAS_SIZE,
-        0, 0, SEND_SIZE, SEND_SIZE
-    );
+    tctx.drawImage(canvas, 0, 0, HALF_W, FULL_H, 0, 0, SEND_W, SEND_H);
 
     const imageData = tmp.toDataURL('image/png', 1.0);
     iAmReady = true;
@@ -1944,7 +1913,7 @@ socket.on('mergeImages', (drawings) => {
     fx.imageSmoothingEnabled = true;
     fx.imageSmoothingQuality = 'high';
     fx.fillStyle = 'white';
-    fx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+    fx.fillRect(0, 0, 1600, 1600);
 
     const i1 = new Image();
     const i2 = new Image();
@@ -1955,8 +1924,11 @@ socket.on('mergeImages', (drawings) => {
     function check() {
         loaded++;
         if (loaded === 2) {
-            fx.drawImage(i1, 0, 0, SEND_SIZE, SEND_SIZE, 0, 0, HALF, CANVAS_SIZE);
-            fx.drawImage(i2, 0, 0, SEND_SIZE, SEND_SIZE, HALF, 0, HALF, CANVAS_SIZE);
+            const player0 = playerIndex === 0 ? i1 : i2;
+            const player1 = playerIndex === 0 ? i2 : i1;
+
+            fx.drawImage(player0, 0, 0, SEND_W, SEND_H, 0, 0, 800, 1600);
+            fx.drawImage(player1, 0, 0, SEND_W, SEND_H, 800, 0, 800, 1600);
         }
     }
     i1.onload = check;
