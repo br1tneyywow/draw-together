@@ -342,7 +342,7 @@
         border-radius: 22px;
         background: linear-gradient(135deg, rgba(255,182,193,0.15), rgba(255,215,0,0.1));
         box-shadow: 0 0 50px rgba(255,20,147,0.4);
-        touch-action: none;
+        touch-action: pan-y;
         user-select: none;
         -webkit-user-select: none;
         margin: 0 auto;
@@ -1677,6 +1677,7 @@ viewport.addEventListener('wheel', (e) => {
 let touchMode = null;
 let tStartDist = 0, tStartZoom = 1, tStartMidX = 0, tStartMidY = 0;
 let tStartPanX = 0, tStartPanY = 0;
+let tMoveBlocked = false;
 
 viewport.addEventListener('touchstart', (e) => {
     if (e.touches.length === 2) {
@@ -1689,11 +1690,13 @@ viewport.addEventListener('touchstart', (e) => {
         tStartMidX = (e.touches[0].clientX + e.touches[1].clientX) / 2 - rect.left;
         tStartMidY = (e.touches[0].clientY + e.touches[1].clientY) / 2 - rect.top;
         tStartPanX = panX; tStartPanY = panY;
+        tMoveBlocked = true;
         e.preventDefault();
         return;
     }
     if (e.touches.length === 1) {
         touchMode = 'draw';
+        tMoveBlocked = false;
         const p = getPos(e.touches[0].clientX, e.touches[0].clientY);
         if (!isInAllowedHalf(p.x)) return;
 
@@ -1703,6 +1706,7 @@ viewport.addEventListener('touchstart', (e) => {
             pushHistory();
             floodFill(p.x, p.y, currentColor);
             socket.emit('fillData', { roomId, playerIndex, data: { x: p.x, y: p.y, color: currentColor } });
+            tMoveBlocked = true;
             e.preventDefault();
             return;
         }
@@ -1715,6 +1719,7 @@ viewport.addEventListener('touchstart', (e) => {
             roomId, playerIndex,
             stroke: { x0: p.x, y0: p.y, x1: p.x, y1: p.y, color: currentColor, size: brushSize }
         });
+        tMoveBlocked = true;
         e.preventDefault();
     }
 }, { passive: false });
@@ -1762,6 +1767,7 @@ viewport.addEventListener('touchend', (e) => {
         touchMode = null;
         drawing = false;
         lastX = null; lastY = null;
+        tMoveBlocked = false;
     }
 });
 
@@ -1859,10 +1865,6 @@ window.addEventListener('resize', () => {
     updateBrushCursor();
 });
 requestAnimationFrame(applyTransform);
-
-viewport.addEventListener('touchmove', (e) => {
-    if (touchMode === 'pan' || drawing) e.preventDefault();
-}, { passive: false });
 </script>
 </body>
 </html>
