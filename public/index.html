@@ -2,18 +2,20 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>💕 Рисуем вместе</title>
 <style>
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     html, body {
         margin: 0; padding: 0;
         min-height: 100vh;
+        min-height: 100dvh;
         font-family: 'Segoe UI', sans-serif;
         background: #1a0a1e;
         color: #fff5f8;
         overflow-x: hidden;
         position: relative;
+        overscroll-behavior: none;
     }
     body::before, body::after {
         content: '';
@@ -45,12 +47,16 @@
         position: relative;
         z-index: 1;
         min-height: 100vh;
+        min-height: 100dvh;
         display: flex; align-items: center; justify-content: center;
         padding: 10px;
+        padding-top: max(10px, env(safe-area-inset-top));
+        padding-bottom: max(10px, env(safe-area-inset-bottom));
     }
     .container {
         background: linear-gradient(145deg, rgba(60,32,55,0.85), rgba(70,38,62,0.85));
         backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
         padding: 22px; border-radius: 28px;
         box-shadow: 0 10px 70px rgba(255,20,147,0.35), 0 0 0 1px rgba(255,182,193,0.25);
         max-width: 1000px; width: 100%;
@@ -74,6 +80,7 @@
         font-size: 15px; font-weight: bold;
         box-shadow: 0 4px 20px rgba(255,107,157,0.5);
         transition: all 0.2s;
+        touch-action: manipulation;
     }
     .btn:hover { transform: translateY(-3px); }
     .btn:active { transform: translateY(-1px) scale(0.98); }
@@ -89,6 +96,7 @@
         background: rgba(50,26,48,0.8); color: #fff5f8;
         text-align: center; font-weight: bold; outline: none;
         font-family: inherit;
+        max-width: 100%;
     }
     input.code-input { text-transform: uppercase; letter-spacing: 4px; width: 150px; }
     input:focus { border-color: #FF69B4; }
@@ -98,6 +106,7 @@
         margin: 15px auto; padding: 8px 12px;
         background: rgba(255,182,193,0.12); border-radius: 20px;
         border: 1px solid rgba(255,182,193,0.3);
+        flex-wrap: wrap; justify-content: center;
     }
     .code-box {
         font-size: 28px; font-weight: bold;
@@ -113,6 +122,7 @@
         box-shadow: 0 3px 15px rgba(255,107,157,0.5);
         transition: all 0.2s;
         display: flex; align-items: center; gap: 5px;
+        touch-action: manipulation;
     }
     .copy-btn:hover { transform: scale(1.05); }
     .copy-btn.copied { background: linear-gradient(135deg, #66BB6A, #43A047); }
@@ -146,6 +156,7 @@
         opacity: 0.95;
         background: white;
         position: relative;
+        touch-action: manipulation;
     }
     .image-select .img-wrap img {
         width: 100%; height: 100%; object-fit: cover; display: block;
@@ -184,6 +195,7 @@
         width: 100%; aspect-ratio: 1; border-radius: 50%; cursor: pointer;
         border: 3px solid rgba(255,255,255,0.2);
         transition: all 0.15s;
+        touch-action: manipulation;
     }
     .color-swatch:hover { transform: scale(1.15); }
     .color-swatch.active {
@@ -217,10 +229,12 @@
         height: 8px;
         border-radius: 6px;
         appearance: none;
+        -webkit-appearance: none;
         outline: none;
     }
     .color-picker-inline input[type=range]::-webkit-slider-thumb {
         appearance: none;
+        -webkit-appearance: none;
         width: 22px; height: 22px;
         border-radius: 50%;
         background: white;
@@ -322,13 +336,15 @@
         width: 800px;
         aspect-ratio: 1 / 1;
         max-width: 100%;
-        max-height: 80vh;
+        max-height: 70vh;
+        max-height: 70dvh;
         overflow: hidden;
         border-radius: 22px;
         background: linear-gradient(135deg, rgba(255,182,193,0.15), rgba(255,215,0,0.1));
         box-shadow: 0 0 50px rgba(255,20,147,0.4);
         touch-action: none;
         user-select: none;
+        -webkit-user-select: none;
         margin: 0 auto;
     }
     .zoom-wrap {
@@ -349,20 +365,24 @@
     canvas.panning { cursor: grabbing; }
 
     .zoom-panel {
-        position: fixed; bottom: 20px; right: 20px;
+        position: fixed;
+        bottom: max(20px, env(safe-area-inset-bottom));
+        right: max(20px, env(safe-area-inset-right));
         display: flex; gap: 6px;
         background: rgba(60,32,55,0.95);
         backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
         padding: 6px; border-radius: 15px;
         border: 1px solid rgba(255,182,193,0.4);
         z-index: 100;
     }
     .zoom-btn {
-        width: 38px; height: 38px; border-radius: 10px; border: none; cursor: pointer;
+        width: 44px; height: 44px; border-radius: 10px; border: none; cursor: pointer;
         background: linear-gradient(135deg, #FF6B9D, #FF1493);
         color: white; font-size: 18px; font-weight: bold;
         display: flex; align-items: center; justify-content: center;
         transition: all 0.2s;
+        touch-action: manipulation;
     }
     .zoom-btn:hover { transform: scale(1.1); }
     .zoom-info {
@@ -396,6 +416,7 @@
         background: rgba(255,182,193,0.1);
         border: 3px solid transparent;
         transition: all 0.2s;
+        touch-action: manipulation;
     }
     .avatar-item:hover { transform: scale(1.15); }
     .avatar-item.active {
@@ -417,6 +438,7 @@
         background: rgba(255,255,255,0.05); border-radius: 50%;
         cursor: pointer; border: 2px solid rgba(255,182,193,0.2);
         transition: all 0.15s;
+        touch-action: manipulation;
     }
     .reaction-btn:hover {
         transform: scale(1.25) rotate(-12deg);
@@ -437,6 +459,7 @@
         font-weight: bold;
         cursor: pointer;
         transition: all 0.2s;
+        touch-action: manipulation;
     }
     .phrase-btn:hover {
         transform: translateY(-2px) scale(1.05);
@@ -446,7 +469,9 @@
     }
 
     #bubbles {
-        position: fixed; top: 20px; right: 20px;
+        position: fixed;
+        top: max(20px, env(safe-area-inset-top));
+        right: max(20px, env(safe-area-inset-right));
         z-index: 9999; display: flex; flex-direction: column;
         gap: 10px; pointer-events: none; max-width: 300px;
     }
@@ -489,6 +514,7 @@
         display: flex; align-items: center; justify-content: center;
         padding: 20px;
         backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
     }
     .tutorial-card {
         background: linear-gradient(145deg, rgba(70,38,62,0.98), rgba(60,32,55,0.98));
@@ -500,7 +526,9 @@
         box-shadow: 0 20px 60px rgba(255,107,157,0.5);
         text-align: left;
         max-height: 90vh;
+        max-height: 90dvh;
         overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
     }
     .tutorial-card h3 {
         margin: 0 0 15px;
@@ -528,23 +556,50 @@
     }
 
     @media (max-width: 700px) {
+        .page-wrap { padding: 6px; }
         .container { padding: 12px; border-radius: 20px; }
         h1 { font-size: 22px; }
         h2 { font-size: 18px; }
         .btn { padding: 10px 16px; font-size: 13px; }
+        .btn.small { padding: 7px 10px; font-size: 12px; }
         .image-select {
             grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
             gap: 10px;
+            padding: 4px;
         }
+        .image-select .img-wrap { border-width: 3px; border-radius: 14px; }
         .code-box { font-size: 22px; }
         .copy-btn { padding: 6px 10px; font-size: 12px; }
-        .palette { grid-template-columns: repeat(8, 1fr); }
-        .reaction-btn { width: 38px; height: 38px; font-size: 22px; }
+        .palette { grid-template-columns: repeat(8, 1fr); padding: 8px; gap: 5px; }
+        .reaction-btn { width: 40px; height: 40px; font-size: 22px; }
         .player-tag { font-size: 12px; padding: 6px 10px; min-width: 100px; }
-        .zoom-panel { bottom: 10px; right: 10px; padding: 4px; }
-        .zoom-btn { width: 32px; height: 32px; font-size: 15px; }
+        .player-tag .avatar { font-size: 18px; }
+        .zoom-panel {
+            bottom: max(10px, env(safe-area-inset-bottom));
+            right: max(10px, env(safe-area-inset-right));
+            padding: 4px;
+        }
+        .zoom-btn { width: 40px; height: 40px; font-size: 16px; }
         .zoom-info { font-size: 11px; padding: 0 5px; min-width: 40px; }
         .phrase-btn { padding: 6px 12px; font-size: 12px; }
+        .canvas-viewport { max-height: 55vh; max-height: 55dvh; border-radius: 16px; }
+        .avatar-item { width: 46px; height: 46px; font-size: 24px; }
+        .color-picker-inline { padding: 12px 14px; }
+        .brush-wrap { font-size: 13px; }
+        #bubbles { max-width: 220px; right: 10px; top: 10px; }
+        .bubble { padding: 8px 14px; font-size: 14px; }
+        .bubble .bubble-avatar { font-size: 22px; }
+        .bubble .bubble-emoji { font-size: 26px; }
+        .bubble .bubble-text { font-size: 13px; }
+        .turn-banner { padding: 10px 14px; font-size: 13px; }
+        .tutorial-card { padding: 20px; }
+        .tool-info { font-size: 12px; }
+    }
+
+    @media (max-width: 380px) {
+        .image-select { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px; }
+        .palette { grid-template-columns: repeat(6, 1fr); }
+        .btn { padding: 9px 12px; font-size: 12px; }
     }
 </style>
 </head>
@@ -566,7 +621,7 @@
         <br><br>
         <button class="btn" onclick="createRoom()">✨ Создать комнату</button>
         <br><br>
-        <input type="text" id="roomInput" class="code-input" placeholder="КОД" maxlength="4">
+        <input type="text" id="roomInput" class="code-input" placeholder="КОД" maxlength="4" inputmode="text" autocapitalize="characters">
         <button class="btn btn-secondary" onclick="pasteCode()" title="Вставить из буфера обмена" style="padding: 10px 16px;">📋</button>
         <button class="btn btn-secondary" onclick="joinRoom()">🔗 Присоединиться</button>
         <p id="status"></p>
@@ -620,8 +675,8 @@
         </div>
 
         <div class="tools">
-            <button class="btn btn-warn small" onclick="undoStroke()">↩️ Отменить штрих</button>
-            <button class="btn btn-danger small" onclick="resetMyHalf()">🔄 Сброс половины</button>
+            <button class="btn btn-warn small" onclick="undoStroke()">↩️ Отменить</button>
+            <button class="btn btn-danger small" onclick="resetMyHalf()">🔄 Сброс</button>
             <button class="btn btn-secondary small" id="fillToggleBtn" onclick="toggleFillMode()">🪣 Заливка: выкл</button>
         </div>
 
@@ -673,7 +728,7 @@
 
     <div id="screen-result" class="hidden">
         <h2>🎉 Ваш шедевр!</h2>
-        <div style="display:inline-block; padding:10px; background: linear-gradient(135deg, rgba(255,107,157,0.2), rgba(255,215,0,0.15)); border-radius: 22px;">
+        <div style="display:inline-block; padding:10px; background: linear-gradient(135deg, rgba(255,107,157,0.2), rgba(255,215,0,0.15)); border-radius: 22px; max-width:100%;">
             <canvas id="finalCanvas" width="1600" height="1600"
                     style="border-radius:12px; background:white; max-width:100%; height:auto; display:block;"></canvas>
         </div>
@@ -851,7 +906,7 @@ async function pasteCode() {
             document.getElementById('status').innerText = 'В буфере нет кода из 4 символов';
         }
     } catch (err) {
-        document.getElementById('status').innerText = 'Не удалось прочитать буфер. Вставь вручную (Ctrl+V).';
+        document.getElementById('status').innerText = 'Не удалось прочитать буфер. Вставь вручную.';
     }
 }
 
@@ -1429,7 +1484,6 @@ let zoomLevel = 1;
 let panX = 0, panY = 0;
 
 function getBaseSize() {
-    /* viewport квадратный (aspect-ratio: 1/1), обе стороны одинаковы */
     return Math.min(viewport.clientWidth, viewport.clientHeight);
 }
 
